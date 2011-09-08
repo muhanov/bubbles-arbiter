@@ -1,8 +1,9 @@
-package com.muhanov.test.bm;
+package com.muhanov.test.ba;
 
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.handler.IUpdateHandler;
+import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.engine.handler.timer.ITimerCallback;
 import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
@@ -10,17 +11,20 @@ import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.IEntity;
 import org.anddev.andengine.entity.scene.Scene;
+import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.shape.IShape;
 import org.anddev.andengine.entity.sprite.Sprite;
+import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
+import org.anddev.andengine.util.SmartList;
 
 import android.util.Log;
 
-public class BmGameActivity extends MenuGameActivity {
+public class BaGameActivity extends MenuGameActivity {
     private static final int CAMERA_WIDTH = 800;
     private static final int CAMERA_HEIGHT = 480;
 
@@ -57,26 +61,46 @@ public class BmGameActivity extends MenuGameActivity {
     public Scene onLoadScene() {
         final Scene scene = new Scene();
         scene.setBackground(new ColorBackground(C(64), C(159), C(255)));
-
-        final Sprite bubble = new Sprite(0, 100, mBubbleTextureRegion);
-        bubble.registerUpdateHandler(new TimerHandler(0.01f, new InternalTimerCallback(bubble)));
+        scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
+        scene.registerUpdateHandler(new InternalSceneUpdateHandler());
         
-        final Sprite bubble2 = new Sprite(bubble.getX() + 2 * bubble.getWidth(), 100,
+        final Sprite bubble = new PhysicalSprite(0, 100, mBubbleTextureRegion);
+        //bubble.registerUpdateHandler(new TimerHandler(0.01f, new InternalTimerCallback(bubble)));
+        
+        final Sprite bubble2 = new PhysicalSprite(bubble.getX() + 2 * bubble.getWidth(), 100,
                 mBubbleTextureRegion);
         
-        final Sprite bubble3 = new Sprite(bubble.getX() + 4 * bubble.getWidth(), 100,
+        final Sprite bubble3 = new PhysicalSprite(bubble.getX() + 4 * bubble.getWidth(), 100,
                 mBubbleTextureRegion);
         
-        final Sprite bubble4 = new Sprite(bubble.getX() + 3 * bubble.getWidth(), bubble.getY() + 1
+        final Sprite bubble4 = new PhysicalSprite(bubble.getX() + 3 * bubble.getWidth(), bubble.getY() + 1
                 * bubble.getHeight(), mBubbleTextureRegion);
         
         scene.attachChild(bubble);
         scene.attachChild(bubble2);
         scene.attachChild(bubble3);
         scene.attachChild(bubble4);
-        
-        scene.registerUpdateHandler(new InternalSceneUpdateHandler());
+
         return scene;
+    }
+    
+    private class InternalOnSceneTouchListener implements IOnSceneTouchListener {
+
+        @Override
+        public boolean onSceneTouchEvent(Scene scene, TouchEvent event) {
+            boolean result = false;
+            int count = scene.getChildCount();
+            for (int i = 0; i < count; ++i) {
+                IShape shape = (IShape) scene.getChild(i);
+                result = shape.contains(event.getX(), event.getY());
+                if (result) {
+                    PhysicsHandler ph = ((PhysicalSprite)shape).getPhysicsHandler();
+                    ph.setVelocityX(100f);
+                    break;
+                }
+            }
+            return result;
+        }
     }
     
     private class InternalSceneUpdateHandler implements IUpdateHandler {
@@ -84,6 +108,7 @@ public class BmGameActivity extends MenuGameActivity {
 
         @Override
         public void onUpdate(float pSecondsElapsed) {
+/*
             final Scene scene = mEngine.getScene();
             IShape e0 = (IShape)scene.getChild(0);
             IShape e1 = (IShape)scene.getChild(1);
@@ -91,31 +116,12 @@ public class BmGameActivity extends MenuGameActivity {
                 e0.clearUpdateHandlers();
                 e1.registerUpdateHandler(new TimerHandler(0.01f, new InternalTimerCallback(e1)));
             }
+*/            
         }
 
         @Override
         public void reset() {
         }
         
-    }
-
-    /**
-     * Change bubble position on the scene.
-     *
-     */
-    private class InternalTimerCallback implements ITimerCallback {
-        private IShape mShape;
-
-        public InternalTimerCallback(IShape shape) {
-            mShape = shape;
-        }
-        
-        @Override
-        public void onTimePassed(TimerHandler pTimerHandler) {
-            float x = mShape.getX();
-            float y = mShape.getY();
-            mShape.setPosition(++x, y);
-            pTimerHandler.reset();
-        }
     }
 }

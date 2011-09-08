@@ -1,4 +1,4 @@
-package com.muhanov.test.bm;
+package com.muhanov.test.ba;
 
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
