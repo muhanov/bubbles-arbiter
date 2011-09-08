@@ -8,8 +8,10 @@ import org.anddev.andengine.engine.handler.timer.TimerHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.anddev.andengine.entity.IEntity;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
+import org.anddev.andengine.entity.shape.IShape;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
@@ -82,7 +84,13 @@ public class BmGameActivity extends MenuGameActivity {
 
         @Override
         public void onUpdate(float pSecondsElapsed) {
-            Log.i("", "" + pSecondsElapsed);
+            final Scene scene = mEngine.getScene();
+            IShape e0 = (IShape)scene.getChild(0);
+            IShape e1 = (IShape)scene.getChild(1);
+            if (e0.collidesWith(e1)){
+                e0.clearUpdateHandlers();
+                e1.registerUpdateHandler(new TimerHandler(0.01f, new InternalTimerCallback(e1)));
+            }
         }
 
         @Override
@@ -96,17 +104,17 @@ public class BmGameActivity extends MenuGameActivity {
      *
      */
     private class InternalTimerCallback implements ITimerCallback {
-        private Sprite mSprite;
+        private IShape mShape;
 
-        public InternalTimerCallback(Sprite sprite) {
-            mSprite = sprite;
+        public InternalTimerCallback(IShape shape) {
+            mShape = shape;
         }
         
         @Override
         public void onTimePassed(TimerHandler pTimerHandler) {
-            float x = mSprite.getX();
-            float y = mSprite.getY();
-            mSprite.setPosition(++x, y);
+            float x = mShape.getX();
+            float y = mShape.getY();
+            mShape.setPosition(++x, y);
             pTimerHandler.reset();
         }
     }

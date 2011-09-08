@@ -1,5 +1,6 @@
 package com.muhanov.test.bm;
 
+import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.view.Menu;
@@ -16,7 +17,8 @@ abstract public class MenuGameActivity extends BaseGameActivity {
     public boolean onMenuItemSelected(final int pFeatureId, final MenuItem pItem) {
         switch(pItem.getItemId()) {
             case MENU_RECET:
-                mEngine.getScene().reset();
+                final Scene scene = mEngine.getScene();
+                scene.reset();
                 return true;
             default:
                 return super.onMenuItemSelected(pFeatureId, pItem);
