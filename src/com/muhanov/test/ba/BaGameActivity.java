@@ -64,18 +64,24 @@ public class BaGameActivity extends MenuGameActivity {
         scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
         scene.registerUpdateHandler(new InternalSceneUpdateHandler());
         
+    	ProjectionsMap m = new ProjectionsMap();
         final Sprite bubble = new PhysicalSprite(0, 100, mBubbleTextureRegion);
-        //bubble.registerUpdateHandler(new TimerHandler(0.01f, new InternalTimerCallback(bubble)));
+        m.addEntity(bubble);
         
         final Sprite bubble2 = new PhysicalSprite(bubble.getX() + 2 * bubble.getWidth(), 100,
                 mBubbleTextureRegion);
-        
+        m.addEntity(bubble2);
+
         final Sprite bubble3 = new PhysicalSprite(bubble.getX() + 4 * bubble.getWidth(), 100,
                 mBubbleTextureRegion);
+        m.addEntity(bubble3);
         
         final Sprite bubble4 = new PhysicalSprite(bubble.getX() + 3 * bubble.getWidth(), bubble.getY() + 1
                 * bubble.getHeight(), mBubbleTextureRegion);
-        
+        m.addEntity(bubble4);
+
+    	m.buildMap();
+
         scene.attachChild(bubble);
         scene.attachChild(bubble2);
         scene.attachChild(bubble3);
