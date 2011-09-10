@@ -15,13 +15,13 @@ abstract public class MenuGameActivity extends BaseGameActivity {
     }
 
     public boolean onMenuItemSelected(final int pFeatureId, final MenuItem pItem) {
-        switch(pItem.getItemId()) {
-            case MENU_RECET:
-                final Scene scene = mEngine.getScene();
-                scene.reset();
-                return true;
-            default:
-                return super.onMenuItemSelected(pFeatureId, pItem);
+        switch (pItem.getItemId()) {
+        case MENU_RECET:
+            final Scene scene = mEngine.getScene();
+            scene.reset();
+            return true;
+        default:
+            return super.onMenuItemSelected(pFeatureId, pItem);
         }
     }
 

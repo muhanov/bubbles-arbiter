@@ -11,20 +11,24 @@ public class PhysicalSprite extends Sprite {
     public PhysicalSprite(final Sprite sprite) {
         this(sprite.getX(), sprite.getY(), sprite.getTextureRegion());
     }
-    
-    public PhysicalSprite (float x, float y, TextureRegion texture) {
+
+    public PhysicalSprite(float x, float y, TextureRegion texture) {
         super(x, y, texture);
         mPhysicsHandler = new PhysicsHandler(this);
         registerUpdateHandler(mPhysicsHandler);
     }
-    
+
     public PhysicsHandler getPhysicsHandler() {
         return mPhysicsHandler;
     }
-    
+
     @Override
     public void reset() {
         mPhysicsHandler.reset();
         super.reset();
+    }
+
+    public boolean isMoving() {
+        return mPhysicsHandler.getVelocityX() != 0 || mPhysicsHandler.getVelocityY() != 0;
     }
 }
