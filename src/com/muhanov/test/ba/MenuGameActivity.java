@@ -9,11 +9,13 @@ import android.view.MenuItem;
 abstract public class MenuGameActivity extends BaseGameActivity {
     private static final int MENU_RECET = Menu.FIRST;
 
+    @Override
     public boolean onCreateOptionsMenu(final Menu pMenu) {
         pMenu.add(Menu.NONE, MENU_RECET, Menu.NONE, "Reset");
         return super.onCreateOptionsMenu(pMenu);
     }
 
+    @Override
     public boolean onMenuItemSelected(final int pFeatureId, final MenuItem pItem) {
         switch (pItem.getItemId()) {
         case MENU_RECET:
