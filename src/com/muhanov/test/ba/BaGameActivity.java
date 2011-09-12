@@ -9,10 +9,12 @@ import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.anddev.andengine.entity.primitive.Line;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.shape.IShape;
+import org.anddev.andengine.entity.shape.RectangularShape;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.opengl.texture.TextureOptions;
@@ -82,10 +84,19 @@ public class BaGameActivity extends MenuGameActivity {
         final Sprite bubble5 = new Circle(bubble.getX() + 6 * bubble.getWidth(), 100,
                 mBubbleTextureRegion);
 
+        float lineX = bubble.getX() + 3 * bubble.getWidth();
+        final Line line = new Line(lineX, 0, lineX, mHeight);
+        line.setColor(C(255), C(0), C(0));
+        float lineX2 = lineX + bubble.getWidth();
+        final Line line2 = new Line(lineX2, 0, lineX2, mHeight);
+        line2.setColor(C(255), C(0), C(0));
+        
         scene.attachChild(bubble);
         scene.attachChild(bubble2);
         scene.attachChild(bubble3);
-        // scene.attachChild(bubble4);
+        scene.attachChild(bubble4);
+        scene.attachChild(line);
+        scene.attachChild(line2);
         // scene.attachChild(bubble5);
         Log.e("", bubble + "," + bubble2 + "," + bubble3 + "," + bubble4);
         return scene;
@@ -102,7 +113,7 @@ public class BaGameActivity extends MenuGameActivity {
                 result = shape.contains(event.getX(), event.getY());
                 if (result) {
                     PhysicsHandler ph = ((PhysicalSprite) shape).getPhysicsHandler();
-                    ph.setVelocityX(50f);
+                    ph.setVelocityX(300f);
                     break;
                 }
             }
@@ -111,23 +122,14 @@ public class BaGameActivity extends MenuGameActivity {
     }
 
     private class InternalSceneUpdateHandler implements IUpdateHandler {
-
+     
         @Override
         public void onUpdate(float pSecondsElapsed) {
             ProjectionsMap pm = new ProjectionsMap();
             final Scene scene = mEngine.getScene();
 
-            for (int i = 0; i < scene.getChildCount(); ++i) {
-                IShape s = (IShape) scene.getChild(i);
-                if (isOnScreen(s) == false) {
-                    PhysicalSprite ps = (PhysicalSprite) s;
-                    ps.getPhysicsHandler().setVelocity(0, 0);
-                    continue;
-                }
-                pm.addEntity(s);
-            }
-            ArrayList<IShape> p = pm.buildMap();
-
+            ArrayList<IShape> p = buildProjectionsMap(scene, pm);
+            
             String str = "";
             for (IShape s : p) {
                 str += s + ",";
@@ -135,29 +137,18 @@ public class BaGameActivity extends MenuGameActivity {
             Log.e("", str);
 
             int next;
-            Log.i("", "size=" + p.size());
             for (int i = 0; i < p.size() - 1; ++i) {
-                PhysicalSprite s1 = (PhysicalSprite) p.get(i);
-                PhysicalSprite s2 = (PhysicalSprite) p.get(i + 1);
-                if (s1.collidesWith(s2)) {
-                    Log.e("", "i=" + i + ", d=" + (s2.getX() - (s1.getX() + s1.getWidth()))
-                            + ", s1.x=" + s1.getX() + ", s1.y=" + s1.getY() + ", s2.x=" + s2.getX()
-                            + ", s2.y=" + s2.getY());
-                    PhysicsHandler ph1 = s1.getPhysicsHandler();
-                    PhysicsHandler ph2 = s2.getPhysicsHandler();
-                    float vx1 = ph1.getVelocityX();
-                    float vy1 = ph1.getVelocityY();
-                    float vx2 = ph2.getVelocityX();
-                    float vy2 = ph2.getVelocityY();
-                    s2.getPhysicsHandler().setVelocity(vx1, vy1);
-                    s1.getPhysicsHandler().setVelocity(vx2, vy2);
+                Circle c1 = (Circle) p.get(i);
+                Circle c2 = (Circle) p.get(i + 1);
+                if (c1.collidesWith(c2)) {
+                    handleCollision(c1, c2);
                 } else {
                     // Log.i("",
                     // "i="+i+", s1.x="+s1.getX()+", s1.y="+s1.getY()+", s2.x="+s2.getX()+", s2.y="+s2.getY());
                 }
             }
         }
-
+        
         @Override
         public void reset() {
             // do nothing
@@ -167,5 +158,32 @@ public class BaGameActivity extends MenuGameActivity {
             return !(Math.abs(shape.getX()) > mWidth || Math.abs(shape.getY()) > mHeight);
         }
 
+        private void handleCollision(final Circle c1, final Circle c2) {
+            PhysicsHandler ph1 = c1.getPhysicsHandler();
+            float vx1 = ph1.getVelocityX();
+            float vy1 = ph1.getVelocityY();
+            PhysicsHandler ph2 = c2.getPhysicsHandler();
+            float vx2 = ph2.getVelocityX();
+            float vy2 = ph2.getVelocityY();
+            c2.getPhysicsHandler().setVelocity(vx1, vy1);
+            c1.getPhysicsHandler().setVelocity(vx2, vy2);
+        }
+
+        private ArrayList<IShape> buildProjectionsMap(final Scene scene, final ProjectionsMap pm) {
+            for (int i = 0; i < scene.getChildCount(); ++i) {
+                IShape s = (IShape) scene.getChild(i);
+/*                
+                if (isOnScreen(s) == false) {
+                    PhysicalSprite ps = (PhysicalSprite) s;
+                    ps.getPhysicsHandler().setVelocity(0, 0);
+                    continue;
+                }
+*/                
+                if (s instanceof RectangularShape) {
+                    pm.addEntity(s);
+                }
+            }
+            return pm.buildMap();
+        }
     }
 }
