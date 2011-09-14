@@ -113,7 +113,7 @@ public class BaGameActivity extends MenuGameActivity {
                 result = shape.contains(event.getX(), event.getY());
                 if (result) {
                     PhysicsHandler ph = ((PhysicalSprite) shape).getPhysicsHandler();
-                    ph.setVelocityX(300f);
+                    ph.setVelocityX(100f);
                     break;
                 }
             }
@@ -159,14 +159,35 @@ public class BaGameActivity extends MenuGameActivity {
         }
 
         private void handleCollision(final Circle c1, final Circle c2) {
+            // current distance between centers
+            float L = Circle.calculateCenterSpacing(c1, c2);
+            // distance between centers at collision moment
+            float L0 = c1.getRadius() + c2.getRadius();
             PhysicsHandler ph1 = c1.getPhysicsHandler();
             float vx1 = ph1.getVelocityX();
             float vy1 = ph1.getVelocityY();
             PhysicsHandler ph2 = c2.getPhysicsHandler();
             float vx2 = ph2.getVelocityX();
             float vy2 = ph2.getVelocityY();
-            c2.getPhysicsHandler().setVelocity(vx1, vy1);
+            float v1 = (float)Math.hypot(vx1, vy1);
+            float v2 = (float)Math.hypot(vx2, vy2);
+            
+            // calculate time at collision moment
+            float dTc = (L - L0) / (v1 + v2);
+            // get coordinates at collision moment
+            float x1c = c1.getX() + vx1 * dTc;
+            float y1c = c1.getY() + vy1 * dTc;
+            float x1 = x1c + vx2 * dTc;
+            float y1 = y1c + vy2 * dTc;
             c1.getPhysicsHandler().setVelocity(vx2, vy2);
+            c1.setPosition(x1, y1);
+            
+            float x2c = c2.getX() + vx2 * dTc;
+            float y2c = c2.getY() + vy2 * dTc;
+            float x2 = x2c + vx1 * dTc;
+            float y2 = y2c + vy1 * dTc;            
+            c2.getPhysicsHandler().setVelocity(vx1, vy1);
+            c2.setPosition(x2, y2);
         }
 
         private ArrayList<IShape> buildProjectionsMap(final Scene scene, final ProjectionsMap pm) {

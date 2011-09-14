@@ -31,9 +31,13 @@ public class Circle extends PhysicalSprite {
         return l <= r;
     }
 
-    private float calculateCenterSpacing(Circle c) {
-        float lx = getCenterX() - c.getCenterX();
-        float ly = getCenterY() - c.getCenterY();
+    public static float calculateCenterSpacing(final Circle c1, final Circle c2) {
+        float lx = c1.getCenterX() - c2.getCenterX();
+        float ly = c1.getCenterY() - c2.getCenterY();
         return (float) Math.hypot(lx, ly);
+    }
+
+    private float calculateCenterSpacing(final Circle c) {
+        return Circle.calculateCenterSpacing(this, c);
     }
 }
