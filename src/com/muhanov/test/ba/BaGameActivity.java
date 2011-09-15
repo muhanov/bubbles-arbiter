@@ -70,13 +70,19 @@ public class BaGameActivity extends MenuGameActivity {
         scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
         scene.registerUpdateHandler(new InternalSceneUpdateHandler());
 
-        final Sprite bubble = new Circle(0, 100, mBubbleTextureRegion);
-
-        final Sprite bubble2 = new Circle(bubble.getX() + 2 * bubble.getWidth(), 100,
+        final PhysicalSprite bubble = new Circle(0, 100, mBubbleTextureRegion);
+        //bubble.getPhysicsHandler().setVelocityX(100f);
+        //bubble.setIgnoreUpdate(true);
+        
+        final PhysicalSprite bubble2 = new Circle(bubble.getX() + 2 * bubble.getWidth(), 100,
                 mBubbleTextureRegion);
+        //bubble2.getPhysicsHandler().setVelocityX(-100f);
+        //bubble2.setIgnoreUpdate(true);
 
-        final Sprite bubble3 = new Circle(bubble.getX() + 4 * bubble.getWidth(), 100,
+        final PhysicalSprite bubble3 = new Circle(bubble.getX() + 4 * bubble.getWidth(), 100,
                 mBubbleTextureRegion);
+        //bubble3.getPhysicsHandler().setVelocityX(100f);
+        //bubble3.setIgnoreUpdate(true);
 
         final Sprite bubble4 = new Circle(bubble.getX() + 3 * bubble.getWidth(), bubble.getY() + 1
                 * bubble.getHeight(), mBubbleTextureRegion);
@@ -90,13 +96,17 @@ public class BaGameActivity extends MenuGameActivity {
         float lineX2 = lineX + bubble.getWidth();
         final Line line2 = new Line(lineX2, 0, lineX2, mHeight);
         line2.setColor(C(255), C(0), C(0));
+        float lineX3 = lineX - bubble.getWidth();
+        final Line line3 = new Line(lineX3, 0, lineX3, mHeight);
+        line3.setColor(C(255), C(0), C(0));
         
         scene.attachChild(bubble);
         scene.attachChild(bubble2);
         scene.attachChild(bubble3);
-        scene.attachChild(bubble4);
+        //scene.attachChild(bubble4);
         scene.attachChild(line);
         scene.attachChild(line2);
+        scene.attachChild(line3);
         // scene.attachChild(bubble5);
         Log.e("", bubble + "," + bubble2 + "," + bubble3 + "," + bubble4);
         return scene;
@@ -112,6 +122,7 @@ public class BaGameActivity extends MenuGameActivity {
                 IShape shape = (IShape) scene.getChild(i);
                 result = shape.contains(event.getX(), event.getY());
                 if (result) {
+                    //((PhysicalSprite) shape).setIgnoreUpdate(false);
                     PhysicsHandler ph = ((PhysicalSprite) shape).getPhysicsHandler();
                     ph.setVelocityX(100f);
                     break;
@@ -177,15 +188,15 @@ public class BaGameActivity extends MenuGameActivity {
             // get coordinates at collision moment
             float x1c = c1.getX() + vx1 * dTc;
             float y1c = c1.getY() + vy1 * dTc;
-            float x1 = x1c + vx2 * dTc;
-            float y1 = y1c + vy2 * dTc;
+            float x1 = x1c - vx2 * dTc;
+            float y1 = y1c - vy2 * dTc;
             c1.getPhysicsHandler().setVelocity(vx2, vy2);
             c1.setPosition(x1, y1);
             
             float x2c = c2.getX() + vx2 * dTc;
             float y2c = c2.getY() + vy2 * dTc;
-            float x2 = x2c + vx1 * dTc;
-            float y2 = y2c + vy1 * dTc;            
+            float x2 = x2c - vx1 * dTc;
+            float y2 = y2c - vy1 * dTc;            
             c2.getPhysicsHandler().setVelocity(vx1, vy1);
             c2.setPosition(x2, y2);
         }
