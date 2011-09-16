@@ -72,16 +72,16 @@ public class BaGameActivity extends MenuGameActivity {
 
         final PhysicalSprite bubble = new Circle(0, 100, 100f, 0f, mBubbleTextureRegion);
 
-        final PhysicalSprite bubble2 = new Circle(bubble.getX() + 2 * bubble.getWidth(), 100, -100f,
-                0, mBubbleTextureRegion);
+        final PhysicalSprite bubble2 = new Circle(bubble.getX() + 2 * bubble.getWidth(), 100,
+                -100f, 0, mBubbleTextureRegion);
 
         final PhysicalSprite bubble3 = new Circle(bubble.getX() + 4 * bubble.getWidth(), 100, 100f,
                 0f, mBubbleTextureRegion);
 
         final Sprite bubble4 = new Circle(bubble.getX() + 3 * bubble.getWidth(), bubble.getY() + 1
-                * bubble.getHeight(), mBubbleTextureRegion);
+                * bubble.getHeight(), -100f, -100f, mBubbleTextureRegion);
 
-        final Sprite bubble5 = new Circle(bubble.getX() + 6 * bubble.getWidth(), 100,
+        final Sprite bubble5 = new Circle(bubble.getX() + 6 * bubble.getWidth(), 100, 0f, 0f,
                 mBubbleTextureRegion);
 
         float lineX = bubble.getX() + 3 * bubble.getWidth();
@@ -97,12 +97,11 @@ public class BaGameActivity extends MenuGameActivity {
         scene.attachChild(bubble);
         scene.attachChild(bubble2);
         scene.attachChild(bubble3);
-        // scene.attachChild(bubble4);
+        scene.attachChild(bubble4);
+        scene.attachChild(bubble5);
         scene.attachChild(line);
         scene.attachChild(line2);
         scene.attachChild(line3);
-        // scene.attachChild(bubble5);
-        // Log.e("", bubble + "," + bubble2 + "," + bubble3 + "," + bubble4);
         return scene;
     }
 
