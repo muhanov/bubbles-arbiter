@@ -7,7 +7,11 @@ public class Circle extends PhysicalSprite {
     private float mRadius;
 
     public Circle(float x, float y, TextureRegion texture) {
-        super(x, y, texture);
+        this(x, y, 0.0f, 0.0f, texture);
+    }
+
+    public Circle(float x, float y, float vx, float vy, TextureRegion texture) {
+        super(x, y, vx, vy, texture);
         mRadius = 0.5f * getWidth();
     }
 
@@ -36,7 +40,7 @@ public class Circle extends PhysicalSprite {
         float ly = c1.getCenterY() - c2.getCenterY();
         return (float) Math.hypot(lx, ly);
     }
-
+    
     private float calculateCenterSpacing(final Circle c) {
         return Circle.calculateCenterSpacing(this, c);
     }

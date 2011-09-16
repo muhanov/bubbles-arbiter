@@ -7,28 +7,49 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 public class PhysicalSprite extends Sprite {
 
     private PhysicsHandler mPhysicsHandler;
+    protected float mInitialVelocityX;
+    protected float mInitialVelocityY;
 
     public PhysicalSprite(final Sprite sprite) {
         this(sprite.getX(), sprite.getY(), sprite.getTextureRegion());
     }
 
     public PhysicalSprite(float x, float y, TextureRegion texture) {
-        super(x, y, texture);
-        mPhysicsHandler = new PhysicsHandler(this);
-        registerUpdateHandler(mPhysicsHandler);
+        this(x, y, 0.0f, 0.0f, texture);
     }
 
+    public PhysicalSprite(float x, float y, float vx, float vy, TextureRegion texture) {
+        super(x, y, texture);
+        mInitialVelocityX = vx;
+        mInitialVelocityY = vy;
+        mPhysicsHandler = new PhysicsHandler(this);
+        mPhysicsHandler.setEnabled(false);
+        registerUpdateHandler(mPhysicsHandler);
+        
+    }
+    
     public PhysicsHandler getPhysicsHandler() {
         return mPhysicsHandler;
     }
 
+    public void setEnabled(boolean isEnabled) {
+        mPhysicsHandler.setEnabled(isEnabled);
+    }
+    
+    public void update() {
+        mPhysicsHandler.setVelocity(mInitialVelocityX, mInitialVelocityY);
+        mPhysicsHandler.setEnabled(true);
+    }
+    
     @Override
     public void reset() {
         mPhysicsHandler.reset();
+        mPhysicsHandler.setEnabled(false);
         super.reset();
     }
 
     public boolean isMoving() {
         return mPhysicsHandler.getVelocityX() != 0 || mPhysicsHandler.getVelocityY() != 0;
     }
+    
 }

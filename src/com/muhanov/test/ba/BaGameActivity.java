@@ -70,19 +70,13 @@ public class BaGameActivity extends MenuGameActivity {
         scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
         scene.registerUpdateHandler(new InternalSceneUpdateHandler());
 
-        final PhysicalSprite bubble = new Circle(0, 100, mBubbleTextureRegion);
-        // bubble.getPhysicsHandler().setVelocityX(100f);
-        // bubble.setIgnoreUpdate(true);
+        final PhysicalSprite bubble = new Circle(0, 100, 100f, 0f, mBubbleTextureRegion);
 
-        final PhysicalSprite bubble2 = new Circle(bubble.getX() + 2 * bubble.getWidth(), 100,
-                mBubbleTextureRegion);
-        // bubble2.getPhysicsHandler().setVelocityX(-100f);
-        // bubble2.setIgnoreUpdate(true);
+        final PhysicalSprite bubble2 = new Circle(bubble.getX() + 2 * bubble.getWidth(), 100, -100f,
+                0, mBubbleTextureRegion);
 
-        final PhysicalSprite bubble3 = new Circle(bubble.getX() + 4 * bubble.getWidth(), 100,
-                mBubbleTextureRegion);
-        // bubble3.getPhysicsHandler().setVelocityX(100f);
-        // bubble3.setIgnoreUpdate(true);
+        final PhysicalSprite bubble3 = new Circle(bubble.getX() + 4 * bubble.getWidth(), 100, 100f,
+                0f, mBubbleTextureRegion);
 
         final Sprite bubble4 = new Circle(bubble.getX() + 3 * bubble.getWidth(), bubble.getY() + 1
                 * bubble.getHeight(), mBubbleTextureRegion);
@@ -122,9 +116,8 @@ public class BaGameActivity extends MenuGameActivity {
                 IShape shape = (IShape) scene.getChild(i);
                 result = shape.contains(event.getX(), event.getY());
                 if (result) {
-                    // ((PhysicalSprite) shape).setIgnoreUpdate(false);
-                    PhysicsHandler ph = ((PhysicalSprite) shape).getPhysicsHandler();
-                    ph.setVelocityX(100f);
+                    PhysicalSprite ps = (PhysicalSprite) shape;
+                    ps.update();
                     break;
                 }
             }
@@ -140,12 +133,6 @@ public class BaGameActivity extends MenuGameActivity {
             final Scene scene = mEngine.getScene();
 
             ArrayList<IShape> p = buildProjectionsMap(scene, pm);
-            //            
-            // String str = "";
-            // for (IShape s : p) {
-            // str += s + ",";
-            // }
-            // Log.e("", str);
 
             int next;
             for (int i = 0; i < p.size() - 1; ++i) {
@@ -171,12 +158,12 @@ public class BaGameActivity extends MenuGameActivity {
 
         private void handleCollision(final Circle c1, final Circle c2) {
             PhysicsHandler ph1 = c1.getPhysicsHandler();
-            float vx1 = ph1.getVelocityX();
-            float vy1 = ph1.getVelocityY();
+            float vx1 = ph1.isEnabled() ? ph1.getVelocityX() : 0.0f;
+            float vy1 = ph1.isEnabled() ? ph1.getVelocityY() : 0.0f;
             float v1 = (float) Math.hypot(vx1, vy1);
             PhysicsHandler ph2 = c2.getPhysicsHandler();
-            float vx2 = ph2.getVelocityX();
-            float vy2 = ph2.getVelocityY();
+            float vx2 = ph2.isEnabled() ? ph2.getVelocityX() : 0.0f;
+            float vy2 = ph2.isEnabled() ? ph2.getVelocityY() : 0.0f;
             float v2 = (float) Math.hypot(vx2, vy2);
 
             // current distance between centers
@@ -190,11 +177,13 @@ public class BaGameActivity extends MenuGameActivity {
             float y1 = c1.getY() + (vy1 - vy2) * dTc;
             ph1.setVelocity(vx2, vy2);
             c1.setPosition(x1, y1);
+            c1.setEnabled(true);
 
             float x2 = c2.getX() + (vx2 - vx1) * dTc;
             float y2 = c2.getY() + (vy2 - vy1) * dTc;
             ph2.setVelocity(vx1, vy1);
             c2.setPosition(x2, y2);
+            c2.setEnabled(true);
         }
 
         private ArrayList<IShape> buildProjectionsMap(final Scene scene, final ProjectionsMap pm) {
