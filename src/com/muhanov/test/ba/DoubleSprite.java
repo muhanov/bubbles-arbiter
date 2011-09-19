@@ -77,6 +77,7 @@ public class DoubleSprite extends BaseRectangle {
     @Override
     protected void doDraw(final GL10 pGL, final Camera pCamera) {
         this.mTextureRegion1.onApply(pGL);
+        super.doDraw(pGL, pCamera);
         this.mTextureRegion2.onApply(pGL);
 
         super.doDraw(pGL, pCamera);
