@@ -37,6 +37,7 @@ public class BaGameActivity extends MenuGameActivity {
 
     private Camera mCamera;
     private TextureRegion mBubbleTextureRegion;
+    private TextureRegion mDouble;
 
     @Override
     public void onLoadComplete() {
@@ -57,10 +58,15 @@ public class BaGameActivity extends MenuGameActivity {
     public void onLoadResources() {
         BitmapTextureAtlas texture = new BitmapTextureAtlas(128, 128,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        BitmapTextureAtlas texture2 = new BitmapTextureAtlas(128, 128,
+                TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         mBubbleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture,
                 this, "bubble.png", 0, 0);
+        mDouble = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture2,
+                this, "arrow.png", 0, 0);
         mEngine.getTextureManager().loadTexture(texture);
+        mEngine.getTextureManager().loadTexture(texture2);
     }
 
     @Override
@@ -94,6 +100,8 @@ public class BaGameActivity extends MenuGameActivity {
         final Line line3 = new Line(lineX3, 0, lineX3, mHeight);
         line3.setColor(C(255), C(0), C(0));
 
+        DoubleSprite ds = new DoubleSprite(0, 300, bubble.getWidth(), bubble.getHeight(), mDouble, mBubbleTextureRegion);
+        
         scene.attachChild(bubble);
         scene.attachChild(bubble2);
         scene.attachChild(bubble3);
@@ -102,6 +110,7 @@ public class BaGameActivity extends MenuGameActivity {
         scene.attachChild(line);
         scene.attachChild(line2);
         scene.attachChild(line3);
+        scene.attachChild(ds);
         return scene;
     }
 
@@ -193,7 +202,7 @@ public class BaGameActivity extends MenuGameActivity {
                  * (PhysicalSprite) s; ps.getPhysicsHandler().setVelocity(0, 0);
                  * continue; }
                  */
-                if (s instanceof RectangularShape) {
+                if (s instanceof Circle) {
                     pm.addEntity(s);
                 }
             }
