@@ -65,8 +65,11 @@ public class BaGameActivity extends MenuGameActivity {
                 this, "bubble.png", 0, 0);
         mDouble = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture2,
                 this, "arrow.png", 0, 0);
+
+        setItemBgTextureRegion(mBubbleTextureRegion);
         mEngine.getTextureManager().loadTexture(texture);
         mEngine.getTextureManager().loadTexture(texture2);
+        loadMenuTextures();
     }
 
     @Override
@@ -75,7 +78,12 @@ public class BaGameActivity extends MenuGameActivity {
         scene.setBackground(new ColorBackground(C(64), C(159), C(255)));
         scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
         scene.registerUpdateHandler(new InternalSceneUpdateHandler());
-
+        addChildren(scene);   
+        
+        return scene;
+    }
+    
+    private void addChildren(final Scene scene) {
         final PhysicalSprite bubble = new Circle(0, 100, 100f, 0f, mBubbleTextureRegion);
 
         final PhysicalSprite bubble2 = new Circle(bubble.getX() + 2 * bubble.getWidth(), 100,
@@ -111,7 +119,6 @@ public class BaGameActivity extends MenuGameActivity {
         scene.attachChild(line2);
         scene.attachChild(line3);
         scene.attachChild(ds);
-        return scene;
     }
 
     private class InternalOnSceneTouchListener implements IOnSceneTouchListener {
