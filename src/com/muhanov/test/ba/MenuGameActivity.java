@@ -14,20 +14,29 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 
 abstract public class MenuGameActivity extends BaseGameActivity implements IOnMenuItemClickListener {
     private MenuScene mMenuScene;
     private BitmapTextureAtlas mMenuTexture;
     private TextureRegion mMenuItemBgRegion;
     
+    public void openMenu() {
+        mEngine.getScene().setChildScene(mMenuScene, false, true, true);
+    }
+    
+    public void closeMenu() {
+        mEngine.getScene().getChildScene().back();
+    }
+    
     @Override
     public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
             float pMenuItemLocalX, float pMenuItemLocalY) {
         int itemId = pMenuItem.getID();
-        return false;
+        loadLevel(itemId);
+        return true;
     }
+    
+    public abstract void loadLevel(int levelId);
     
     protected void setItemBgTextureRegion(final TextureRegion bg) {
         mMenuItemBgRegion = bg;
@@ -50,9 +59,9 @@ abstract public class MenuGameActivity extends BaseGameActivity implements IOnMe
     }
 
     private void addMenuItem(int id) {
-        final SpriteMenuItem resetMenuItem = new SpriteMenuItem(id, mMenuItemBgRegion);
-        resetMenuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
-        mMenuScene.addMenuItem(resetMenuItem);
+        final SpriteMenuItem menuItem = new SpriteMenuItem(id, mMenuItemBgRegion);
+        menuItem.setBlendFunction(GL10.GL_SRC_ALPHA, GL10.GL_ONE_MINUS_SRC_ALPHA);
+        mMenuScene.addMenuItem(menuItem);
     }
 
     @Override
@@ -61,10 +70,10 @@ abstract public class MenuGameActivity extends BaseGameActivity implements IOnMe
             final Scene scene = mEngine.getScene();
             if(scene.hasChildScene()) {
                 /* Remove the menu and reset it. */
-                scene.getChildScene().back();
+                closeMenu();
             } else {
                 /* Attach the menu. */
-                scene.setChildScene(mMenuScene, false, true, true);
+                openMenu();
             }
             return true;
         }

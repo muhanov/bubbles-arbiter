@@ -40,11 +40,6 @@ public class BaGameActivity extends MenuGameActivity {
     private TextureRegion mDouble;
 
     @Override
-    public void onLoadComplete() {
-        // do nothing
-    }
-
-    @Override
     public Engine onLoadEngine() {
         mCamera = new Camera(0, 0, CAMERA_WIDTH, CAMERA_HEIGHT);
         Display d = getWindowManager().getDefaultDisplay();
@@ -78,9 +73,20 @@ public class BaGameActivity extends MenuGameActivity {
         scene.setBackground(new ColorBackground(C(64), C(159), C(255)));
         scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
         scene.registerUpdateHandler(new InternalSceneUpdateHandler());
-        addChildren(scene);   
-        
+        createMenuScene(mCamera);
         return scene;
+    }
+    
+    @Override
+    public void onLoadComplete() {
+        openMenu();
+    }
+
+    @Override
+    public void loadLevel(int levelId) {
+        closeMenu();
+        final Scene scene = mEngine.getScene();
+        addChildren(scene);
     }
     
     private void addChildren(final Scene scene) {
