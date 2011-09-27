@@ -84,8 +84,9 @@ public class BaGameActivity extends MenuGameActivity {
 
     @Override
     public void loadLevel(int levelId) {
-        closeMenu();
         final Scene scene = mEngine.getScene();
+        scene.detachChildren();
+        scene.reset();
         addChildren(scene);
     }
     

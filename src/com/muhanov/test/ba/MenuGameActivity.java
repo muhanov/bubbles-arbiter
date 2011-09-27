@@ -31,6 +31,7 @@ abstract public class MenuGameActivity extends BaseGameActivity implements IOnMe
     @Override
     public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
             float pMenuItemLocalX, float pMenuItemLocalY) {
+        closeMenu();
         int itemId = pMenuItem.getID();
         loadLevel(itemId);
         return true;
