@@ -11,7 +11,7 @@ public class GameMenuAnimator extends BaseMenuAnimator {
     @Override
     public void buildAnimations(ArrayList<IMenuItem> pMenuItems, float pCameraWidth,
             float pCameraHeight) {
-        // TODO Auto-generated method stub
+        // do nothing
 
     }
 
