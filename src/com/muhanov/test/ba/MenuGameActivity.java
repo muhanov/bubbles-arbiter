@@ -49,9 +49,10 @@ abstract public class MenuGameActivity extends BaseGameActivity implements IOnMe
     
     protected MenuScene createMenuScene(final Camera camera) {
         mMenuScene = new MenuScene(camera);
-        addMenuItem(0);
-        addMenuItem(1);
-
+        mMenuScene.setMenuAnimator(new GameMenuAnimator());
+        for (int i = 0; i < 7; ++i) {
+            addMenuItem(i);
+        }
         mMenuScene.buildAnimations();
         mMenuScene.setBackgroundEnabled(true);
         mMenuScene.setOnMenuItemClickListener(this);
