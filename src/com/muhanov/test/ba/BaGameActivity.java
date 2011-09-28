@@ -1,5 +1,6 @@
 package com.muhanov.test.ba;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.anddev.andengine.engine.Engine;
@@ -17,10 +18,13 @@ import org.anddev.andengine.entity.shape.IShape;
 import org.anddev.andengine.entity.shape.RectangularShape;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
+import org.anddev.andengine.level.LevelLoader;
+import org.anddev.andengine.level.LevelLoader.IEntityLoader;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
+import org.xml.sax.Attributes;
 
 import android.util.Log;
 import android.view.Display;
@@ -36,6 +40,7 @@ public class BaGameActivity extends MenuGameActivity {
     }
 
     private Camera mCamera;
+    private LevelLoader mLevelLoader;
     private TextureRegion mBubbleTextureRegion;
     private TextureRegion mDouble;
 
@@ -58,8 +63,8 @@ public class BaGameActivity extends MenuGameActivity {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         mBubbleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture,
                 this, "bubble.png", 0, 0);
-        mDouble = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture2,
-                this, "arrow.png", 0, 0);
+        mDouble = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture2, this,
+                "arrow.png", 0, 0);
 
         setItemBgTextureRegion(mBubbleTextureRegion);
         mEngine.getTextureManager().loadTexture(texture);
@@ -74,9 +79,17 @@ public class BaGameActivity extends MenuGameActivity {
         scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
         scene.registerUpdateHandler(new InternalSceneUpdateHandler());
         createMenuScene(mCamera);
+        mLevelLoader = new LevelLoader();
+        mLevelLoader.setAssetBasePath("level/");
+        mLevelLoader.setDefaultEntityLoader(new IEntityLoader() {
+            @Override
+            public void onLoadEntity(String pEntityName, Attributes pAttributes) {
+                addChildren(mEngine.getScene());
+            }
+        });
         return scene;
     }
-    
+
     @Override
     public void onLoadComplete() {
         openMenu();
@@ -84,14 +97,14 @@ public class BaGameActivity extends MenuGameActivity {
 
     @Override
     public void loadLevel(int levelId) {
-        final Scene scene = mEngine.getScene();
-        scene.setChildrenVisible(false);
-        scene.detachChildren();
-//        scene.reset();
-        addChildren(scene);
-        scene.setChildrenVisible(true);
+
+        try {
+            mLevelLoader.loadLevelFromAsset(this, "example.lvl");
+        } catch (final IOException e) {
+            // do nothing
+        }
     }
-    
+
     private void addChildren(final Scene scene) {
         final PhysicalSprite bubble = new Circle(0, 100, 100f, 0f, mBubbleTextureRegion);
 
@@ -117,8 +130,9 @@ public class BaGameActivity extends MenuGameActivity {
         final Line line3 = new Line(lineX3, 0, lineX3, mHeight);
         line3.setColor(C(255), C(0), C(0));
 
-        DoubleSprite ds = new DoubleSprite(0, 300, bubble.getWidth(), bubble.getHeight(), mDouble, mBubbleTextureRegion);
-        
+        DoubleSprite ds = new DoubleSprite(0, 300, bubble.getWidth(), bubble.getHeight(), mDouble,
+                mBubbleTextureRegion);
+
         scene.attachChild(bubble);
         scene.attachChild(bubble2);
         scene.attachChild(bubble3);
