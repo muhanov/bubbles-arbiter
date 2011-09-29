@@ -135,8 +135,9 @@ public class BaGameActivity extends MenuGameActivity {
         final Line line3 = new Line(lineX3, 0, lineX3, mHeight);
         line3.setColor(C(255), C(0), C(0));
 
-        DoubleSprite ds = new DoubleSprite(0, 300, bubble.getWidth(), bubble.getHeight(), mDouble,
-                mBubbleTextureRegion);
+        final Sprite ds = new Circle(0, 300, 100f, 0f, mBubbleTextureRegion);
+        final Sprite arrow = new Sprite(0, 0, mDouble);
+        ds.attachChild(arrow);
 
         scene.attachChild(bubble);
         scene.attachChild(bubble2);
