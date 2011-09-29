@@ -33,7 +33,7 @@ abstract public class MenuGameActivity extends BaseGameActivity implements IOnMe
             float pMenuItemLocalX, float pMenuItemLocalY) {
         int itemId = pMenuItem.getID();
         loadLevel(itemId);
-        closeMenu();
+        //closeMenu();
         return true;
     }
     

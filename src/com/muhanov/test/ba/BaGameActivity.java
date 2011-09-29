@@ -50,8 +50,10 @@ public class BaGameActivity extends MenuGameActivity {
         Display d = getWindowManager().getDefaultDisplay();
         mWidth = d.getWidth();
         mHeight = d.getHeight();
-        return new Engine(new EngineOptions(true, ScreenOrientation.LANDSCAPE,
-                new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera));
+        final EngineOptions engineOptions = new EngineOptions(true, ScreenOrientation.LANDSCAPE,
+                new RatioResolutionPolicy(CAMERA_WIDTH, CAMERA_HEIGHT), mCamera);
+        engineOptions.getTouchOptions().enableRunOnUpdateThread();
+        return new Engine(engineOptions);
     }
 
     @Override
@@ -97,12 +99,15 @@ public class BaGameActivity extends MenuGameActivity {
 
     @Override
     public void loadLevel(int levelId) {
-
-        try {
-            mLevelLoader.loadLevelFromAsset(this, "example.lvl");
-        } catch (final IOException e) {
-            // do nothing
-        }
+        final Scene scene = mEngine.getScene();
+        scene.reset();
+        scene.detachChildren();
+        addChildren(scene);        
+//        try {
+//            mLevelLoader.loadLevelFromAsset(this, "example.lvl");
+//        } catch (final IOException e) {
+//            // do nothing
+//        }
     }
 
     private void addChildren(final Scene scene) {
