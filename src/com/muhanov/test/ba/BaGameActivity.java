@@ -9,6 +9,9 @@ import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.anddev.andengine.entity.layer.tiled.tmx.TMXLoader;
+import org.anddev.andengine.entity.layer.tiled.tmx.TMXTiledMap;
+import org.anddev.andengine.entity.layer.tiled.tmx.util.exception.TMXLoadException;
 import org.anddev.andengine.entity.primitive.Line;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
@@ -37,7 +40,7 @@ public class BaGameActivity extends MenuGameActivity {
     }
 
     private Camera mCamera;
-    private LevelLoader mLevelLoader;
+    private TMXLoader mLevelLoader;
     private TextureRegion mBubbleTextureRegion;
     private TextureRegion mDouble;
 
@@ -78,14 +81,8 @@ public class BaGameActivity extends MenuGameActivity {
         scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
         scene.registerUpdateHandler(new InternalSceneUpdateHandler());
         createMenuScene(mCamera);
-        mLevelLoader = new LevelLoader();
-        mLevelLoader.setAssetBasePath("level/");
-        mLevelLoader.setDefaultEntityLoader(new IEntityLoader() {
-            @Override
-            public void onLoadEntity(String pEntityName, Attributes pAttributes) {
-                addChildren(mEngine.getScene());
-            }
-        });
+        mLevelLoader = new TMXLoader(this, this.mEngine.getTextureManager(),
+                TextureOptions.BILINEAR_PREMULTIPLYALPHA, null);
         return scene;
     }
 
@@ -99,12 +96,13 @@ public class BaGameActivity extends MenuGameActivity {
         final Scene scene = mEngine.getScene();
         scene.reset();
         scene.detachChildren();
-        addChildren(scene);        
-//        try {
-//            mLevelLoader.loadLevelFromAsset(this, "example.lvl");
-//        } catch (final IOException e) {
-//            // do nothing
-//        }
+        addChildren(scene);
+        TMXTiledMap tiledMap;
+        try {
+            tiledMap = mLevelLoader.loadFromAsset(this, "level/1.lvl");
+        } catch (final TMXLoadException e) {
+            // do nothing
+        }
     }
 
     private void addChildren(final Scene scene) {
