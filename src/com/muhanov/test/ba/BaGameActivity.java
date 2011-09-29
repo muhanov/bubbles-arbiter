@@ -1,6 +1,5 @@
 package com.muhanov.test.ba;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import org.anddev.andengine.engine.Engine;
@@ -15,7 +14,6 @@ import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.shape.IShape;
-import org.anddev.andengine.entity.shape.RectangularShape;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.level.LevelLoader;
@@ -26,7 +24,6 @@ import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextur
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.xml.sax.Attributes;
 
-import android.util.Log;
 import android.view.Display;
 
 public class BaGameActivity extends MenuGameActivity {
