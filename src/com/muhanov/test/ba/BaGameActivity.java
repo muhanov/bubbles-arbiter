@@ -10,6 +10,9 @@ import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXLoader;
+import org.anddev.andengine.entity.layer.tiled.tmx.TMXObject;
+import org.anddev.andengine.entity.layer.tiled.tmx.TMXObjectGroup;
+import org.anddev.andengine.entity.layer.tiled.tmx.TMXTileSet;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXTiledMap;
 import org.anddev.andengine.entity.layer.tiled.tmx.util.exception.TMXLoadException;
 import org.anddev.andengine.entity.primitive.Line;
@@ -96,10 +99,18 @@ public class BaGameActivity extends MenuGameActivity {
         final Scene scene = mEngine.getScene();
         scene.reset();
         scene.detachChildren();
-        addChildren(scene);
+        // addChildren(scene);
         TMXTiledMap tiledMap;
         try {
-            tiledMap = mLevelLoader.loadFromAsset(this, "level/1.lvl");
+            tiledMap = mLevelLoader.loadFromAsset(this, "level/" + (levelId % 2 + 1) + ".tmx");
+            TMXTileSet set = tiledMap.getTMXTileSets().get(0);
+            ArrayList<TMXObjectGroup> groups = tiledMap.getTMXObjectGroups();
+            TMXObjectGroup group = groups.get(0);
+            for (TMXObject object : group.getTMXObjects()) {
+                Circle c = new Circle(object.getX(), object.getY(), tiledMap
+                        .getTextureRegionFromGlobalTileID(set.getFirstGlobalTileID()));
+                scene.attachChild(c);
+            }
         } catch (final TMXLoadException e) {
             // do nothing
         }

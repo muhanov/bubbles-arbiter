@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="10" height="10" tilewidth="72" tileheight="72">
+ <tileset firstgid="1" name="bubble" tilewidth="70" tileheight="70">
+  <image source="gfx/bubble.png" width="70" height="70"/>
+ </tileset>
+ <objectgroup name="Object Layer 1" width="10" height="10">
+  <object name="value" type="velocity" gid="1" x="77" y="265">
+   <properties>
+    <property name="vx" value="100"/>
+    <property name="vy" value="0"/>
+   </properties>
+  </object>
+  <object gid="1" x="217" y="319"/>
+  <object gid="1" x="308" y="402"/>
+  <object gid="1" x="-18" y="384"/>
+ </objectgroup>
+</map>
