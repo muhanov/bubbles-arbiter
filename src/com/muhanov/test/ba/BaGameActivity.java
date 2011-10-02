@@ -12,6 +12,8 @@ import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolic
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXLoader;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXObject;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXObjectGroup;
+import org.anddev.andengine.entity.layer.tiled.tmx.TMXObjectProperty;
+import org.anddev.andengine.entity.layer.tiled.tmx.TMXProperties;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXTileSet;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXTiledMap;
 import org.anddev.andengine.entity.layer.tiled.tmx.util.exception.TMXLoadException;
@@ -22,13 +24,10 @@ import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.shape.IShape;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
-import org.anddev.andengine.level.LevelLoader;
-import org.anddev.andengine.level.LevelLoader.IEntityLoader;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.xml.sax.Attributes;
 
 import android.view.Display;
 
@@ -84,7 +83,7 @@ public class BaGameActivity extends MenuGameActivity {
         scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
         scene.registerUpdateHandler(new InternalSceneUpdateHandler());
         createMenuScene(mCamera);
-        mLevelLoader = new TMXLoader(this, this.mEngine.getTextureManager(),
+        mLevelLoader = new TMXLoader(this, mEngine.getTextureManager(),
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA, null);
         return scene;
     }
@@ -103,12 +102,16 @@ public class BaGameActivity extends MenuGameActivity {
         TMXTiledMap tiledMap;
         try {
             tiledMap = mLevelLoader.loadFromAsset(this, "level/" + (levelId % 2 + 1) + ".tmx");
-            TMXTileSet set = tiledMap.getTMXTileSets().get(0);
+            TMXTileSet set = tiledMap.getTMXTileSets().get(0); // bubble
+            int bubbleId = set.getFirstGlobalTileID();
+
             ArrayList<TMXObjectGroup> groups = tiledMap.getTMXObjectGroups();
-            TMXObjectGroup group = groups.get(0);
+            TMXObjectGroup group = groups.get(0); // we have only single group
             for (TMXObject object : group.getTMXObjects()) {
+                TMXProperties<TMXObjectProperty> props = object.getTMXObjectProperties();
+                
                 Circle c = new Circle(object.getX(), object.getY(), tiledMap
-                        .getTextureRegionFromGlobalTileID(set.getFirstGlobalTileID()));
+                        .getTextureRegionFromGlobalTileID(bubbleId));
                 scene.attachChild(c);
             }
         } catch (final TMXLoadException e) {
