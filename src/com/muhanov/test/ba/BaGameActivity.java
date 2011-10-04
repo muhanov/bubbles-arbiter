@@ -103,9 +103,6 @@ public class BaGameActivity extends MenuGameActivity {
         TMXTiledMap tiledMap;
         try {
             tiledMap = mLevelLoader.loadFromAsset(this, "level/" + (levelId % 2 + 1) + ".tmx");
-            TMXTileSet set = tiledMap.getTMXTileSets().get(0); // bubble
-            int bubbleId = set.getFirstGlobalTileID();
-
             ArrayList<TMXObjectGroup> groups = tiledMap.getTMXObjectGroups();
             TMXObjectGroup group = groups.get(0); // we have only single group
             for (TMXObject object : group.getTMXObjects()) {
@@ -119,8 +116,18 @@ public class BaGameActivity extends MenuGameActivity {
     }
     
     private IEntity createEntity(final TMXTiledMap tiledMap, final TMXObject object, final TMXProperties<TMXObjectProperty> props) {
-        return new Circle(object.getX(), object.getY(), tiledMap
-                .getTextureRegionFromGlobalTileID(1));
+        final int gid = object.getGid();
+        float vx = 0f;
+        float vy = 0f;
+        for (final TMXObjectProperty p : props) {
+            if(p.getName().equals("vx")) {
+                vx = Float.parseFloat(p.getValue());
+            } else if (p.getName().equals("vy")) {
+                vy = Float.parseFloat(p.getValue());
+            }
+        }
+        return new Circle(object.getX(), object.getY(), vx, vy, tiledMap
+                .getTextureRegionFromGlobalTileID(gid));
     }
 
     private void addChildren(final Scene scene) {

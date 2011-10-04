@@ -4,13 +4,18 @@
   <image source="gfx/bubble.png" width="70" height="70"/>
  </tileset>
  <objectgroup name="Object Layer 1" width="10" height="10">
-  <object name="value" type="velocity" gid="1" x="213" y="262">
+  <object name="value" type="velocity" gid="1" x="217" y="287">
    <properties>
     <property name="vx" value="100"/>
     <property name="vy" value="0"/>
    </properties>
   </object>
-  <object gid="1" x="135" y="403"/>
+  <object gid="1" x="145" y="359">
+   <properties>
+    <property name="vx" value="100"/>
+    <property name="vy" value="-100"/>
+   </properties>
+  </object>
   <object gid="1" x="131" y="263"/>
   <object gid="1" x="154" y="178"/>
  </objectgroup>
