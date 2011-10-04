@@ -77,6 +77,7 @@ public interface TMXConstants {
 	public static final String TAG_OBJECT_ATTRIBUTE_Y = "y";
 	public static final String TAG_OBJECT_ATTRIBUTE_WIDTH = "width";
 	public static final String TAG_OBJECT_ATTRIBUTE_HEIGHT = "height";
+	public static final String TAG_OBJECT_ATTRIBUTE_GID = "gid";
 
 	// ===========================================================
 	// Methods
