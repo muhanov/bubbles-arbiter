@@ -1010,19 +1010,18 @@ public class Entity implements IEntity {
 	}
 
 	protected void onManagedUpdate(final float pSecondsElapsed) {
-		if(this.mEntityModifiers != null) {
+        if(this.mChildren != null && !this.mChildrenIgnoreUpdate) {
+            final ArrayList<IEntity> entities = this.mChildren;
+            final int entityCount = entities.size();
+            for(int i = 0; i < entityCount; i++) {
+                entities.get(i).onUpdate(pSecondsElapsed);
+            }
+        }
+        if(this.mEntityModifiers != null) {
 			this.mEntityModifiers.onUpdate(pSecondsElapsed);
 		}
 		if(this.mUpdateHandlers != null) {
 			this.mUpdateHandlers.onUpdate(pSecondsElapsed);
-		}
-
-		if(this.mChildren != null && !this.mChildrenIgnoreUpdate) {
-			final ArrayList<IEntity> entities = this.mChildren;
-			final int entityCount = entities.size();
-			for(int i = 0; i < entityCount; i++) {
-				entities.get(i).onUpdate(pSecondsElapsed);
-			}
 		}
 	}
 
