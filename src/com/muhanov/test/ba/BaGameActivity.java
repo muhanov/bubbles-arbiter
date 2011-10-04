@@ -9,6 +9,7 @@ import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
+import org.anddev.andengine.entity.IEntity;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXLoader;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXObject;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXObjectGroup;
@@ -108,15 +109,18 @@ public class BaGameActivity extends MenuGameActivity {
             ArrayList<TMXObjectGroup> groups = tiledMap.getTMXObjectGroups();
             TMXObjectGroup group = groups.get(0); // we have only single group
             for (TMXObject object : group.getTMXObjects()) {
-                TMXProperties<TMXObjectProperty> props = object.getTMXObjectProperties();
-                
-                Circle c = new Circle(object.getX(), object.getY(), tiledMap
-                        .getTextureRegionFromGlobalTileID(bubbleId));
+                final TMXProperties<TMXObjectProperty> props = object.getTMXObjectProperties();
+                IEntity c = createEntity(tiledMap, object, props);
                 scene.attachChild(c);
             }
         } catch (final TMXLoadException e) {
             // do nothing
         }
+    }
+    
+    private IEntity createEntity(final TMXTiledMap tiledMap, final TMXObject object, final TMXProperties<TMXObjectProperty> props) {
+        return new Circle(object.getX(), object.getY(), tiledMap
+                .getTextureRegionFromGlobalTileID(1));
     }
 
     private void addChildren(final Scene scene) {

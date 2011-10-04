@@ -21,5 +21,6 @@
     <property name="vy" value="0"/>
    </properties>
   </object>
+  <object gid="2" x="218" y="431"/>
  </objectgroup>
 </map>
