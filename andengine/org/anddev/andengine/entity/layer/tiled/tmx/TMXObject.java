@@ -26,6 +26,7 @@ public class TMXObject implements TMXConstants {
 	private final int mY;
 	private final int mWidth;
 	private final int mHeight;
+	private final int mGid;
 	private final TMXProperties<TMXObjectProperty> mTMXObjectProperties = new TMXProperties<TMXObjectProperty>();
 
 	// ===========================================================
@@ -39,6 +40,7 @@ public class TMXObject implements TMXConstants {
 		this.mY = SAXUtils.getIntAttributeOrThrow(pAttributes, TAG_OBJECT_ATTRIBUTE_Y);
 		this.mWidth = SAXUtils.getIntAttribute(pAttributes, TAG_OBJECT_ATTRIBUTE_WIDTH, 0);
 		this.mHeight = SAXUtils.getIntAttribute(pAttributes, TAG_OBJECT_ATTRIBUTE_HEIGHT, 0);
+		this.mGid = SAXUtils.getIntAttributeOrThrow(pAttributes, TAG_OBJECT_ATTRIBUTE_GID);
 	}
 
 	// ===========================================================
@@ -69,6 +71,10 @@ public class TMXObject implements TMXConstants {
 		return this.mHeight;
 	}
 
+	public int getGid() {
+	    return this.mGid;
+	}
+	
 	public void addTMXObjectProperty(final TMXObjectProperty pTMXObjectProperty) {
 		this.mTMXObjectProperties.add(pTMXObjectProperty);
 	}
