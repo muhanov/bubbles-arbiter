@@ -16,7 +16,12 @@
     <property name="vy" value="-100"/>
    </properties>
   </object>
-  <object gid="1" x="131" y="263"/>
+  <object gid="1" x="131" y="263">
+   <properties>
+    <property name="vx" value="100"/>
+    <property name="vy" value="0"/>
+   </properties>
+  </object>
   <object gid="1" x="154" y="178"/>
  </objectgroup>
 </map>

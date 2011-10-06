@@ -7,20 +7,21 @@
   <image source="gfx/arrow.png" width="72" height="72"/>
  </tileset>
  <objectgroup name="Object Layer 1" width="10" height="10">
-  <object name="circle" type="velocity" gid="1" x="188" y="222">
+<!--  <object name="circle" type="velocity" gid="1" x="188" y="222">
    <properties>
     <property name="vx" value="100"/>
     <property name="vy" value="0"/>
    </properties>
-  </object>
-  <object gid="1" x="217" y="319"/>
+  </object>                        
   <object gid="1" x="312" y="359"/>
+//-->
+  <object gid="1" x="217" y="319"/>
   <object name="circle" gid="1" x="0" y="418">
    <properties>
     <property name="vx" value="100"/>
     <property name="vy" value="0"/>
    </properties>
   </object>
-  <object gid="2" x="218" y="431"/>
+  <object gid="1" x="235" y="431"/>
  </objectgroup>
 </map>

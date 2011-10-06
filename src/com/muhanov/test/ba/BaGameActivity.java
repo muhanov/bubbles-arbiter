@@ -1,5 +1,6 @@
 package com.muhanov.test.ba;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.anddev.andengine.engine.Engine;
@@ -15,7 +16,6 @@ import org.anddev.andengine.entity.layer.tiled.tmx.TMXObject;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXObjectGroup;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXObjectProperty;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXProperties;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXTileSet;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXTiledMap;
 import org.anddev.andengine.entity.layer.tiled.tmx.util.exception.TMXLoadException;
 import org.anddev.andengine.entity.primitive.Line;
@@ -99,7 +99,6 @@ public class BaGameActivity extends MenuGameActivity {
         final Scene scene = mEngine.getScene();
         scene.reset();
         scene.detachChildren();
-        // addChildren(scene);
         TMXTiledMap tiledMap;
         try {
             tiledMap = mLevelLoader.loadFromAsset(this, "level/" + (levelId % 2 + 1) + ".tmx");
@@ -197,16 +196,14 @@ public class BaGameActivity extends MenuGameActivity {
             final Scene scene = mEngine.getScene();
 
             ArrayList<IShape> p = buildProjectionsMap(scene, pm);
-
-            int next;
-            for (int i = 0; i < p.size() - 1; ++i) {
-                Circle c1 = (Circle) p.get(i);
-                Circle c2 = (Circle) p.get(i + 1);
-                if (c1.collidesWith(c2)) {
-                    handleCollision(c1, c2);
-                } else {
-                    // Log.i("",
-                    // "i="+i+", s1.x="+s1.getX()+", s1.y="+s1.getY()+", s2.x="+s2.getX()+", s2.y="+s2.getY());
+            final int size = p.size();
+            for (int i = 0; i < size; ++i) {
+                for (int j = 0; j < size; ++j) {
+                    Circle c1 = (Circle) p.get(i);
+                    Circle c2 = (Circle) p.get(j);
+                    if (c1 != c2 && c1.collidesWith(c2)) {
+                        handleCollision(c1, c2);
+                    }
                 }
             }
         }
