@@ -113,20 +113,33 @@ public class BaGameActivity extends MenuGameActivity {
             // do nothing
         }
     }
-    
-    private IEntity createEntity(final TMXTiledMap tiledMap, final TMXObject object, final TMXProperties<TMXObjectProperty> props) {
+
+    private IEntity createEntity(final TMXTiledMap tiledMap, final TMXObject object,
+            final TMXProperties<TMXObjectProperty> props) {
         final int gid = object.getGid();
         float vx = 0f;
         float vy = 0f;
         for (final TMXObjectProperty p : props) {
-            if(p.getName().equals("vx")) {
+            if (p.getName().equals("vx")) {
                 vx = Float.parseFloat(p.getValue());
             } else if (p.getName().equals("vy")) {
                 vy = Float.parseFloat(p.getValue());
             }
         }
-        return new Circle(object.getX(), object.getY(), vx, vy, tiledMap
-                .getTextureRegionFromGlobalTileID(gid));
+        IEntity e = null;
+        String type = object.getType();
+        if (type == null) {
+            e = new Sprite(object.getX(), object.getY(), tiledMap
+                    .getTextureRegionFromGlobalTileID(gid));
+        } else if (type.equals("circle")) {
+            e = new Circle(object.getX(), object.getY(), vx, vy, tiledMap
+                    .getTextureRegionFromGlobalTileID(gid));
+        } else if (type.equals("hero")) {
+            e = new Sprite(object.getX(), object.getY(), tiledMap
+                    .getTextureRegionFromGlobalTileID(gid));
+            e.setScale(1.9f, 1.9f);
+        }
+        return e;
     }
 
     private void addChildren(final Scene scene) {
@@ -179,8 +192,10 @@ public class BaGameActivity extends MenuGameActivity {
                 IShape shape = (IShape) scene.getChild(i);
                 result = shape.contains(event.getX(), event.getY());
                 if (result) {
-                    PhysicalSprite ps = (PhysicalSprite) shape;
-                    ps.update();
+                    if (shape instanceof PhysicalSprite) {
+                        PhysicalSprite ps = (PhysicalSprite) shape;
+                        ps.update();
+                    }
                     break;
                 }
             }
