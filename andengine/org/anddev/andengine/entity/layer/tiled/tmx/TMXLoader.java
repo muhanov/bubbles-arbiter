@@ -3,6 +3,7 @@ package org.anddev.andengine.entity.layer.tiled.tmx;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -38,6 +39,8 @@ public class TMXLoader {
 	private final TextureOptions mTextureOptions;
 	private final ITMXTilePropertiesListener mTMXTilePropertyListener;
 
+	private static URI sAssetBasePath;
+
 	// ===========================================================
 	// Constructors
 	// ===========================================================
@@ -64,6 +67,9 @@ public class TMXLoader {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+	public void setAssetBasePath(String pAssetPath) {
+		TMXLoader.sAssetBasePath = URI.create(pAssetPath);
+	}
 
 	// ===========================================================
 	// Methods for/from SuperClass/Interfaces
@@ -75,6 +81,7 @@ public class TMXLoader {
 
 	public TMXTiledMap loadFromAsset(final Context pContext, final String pAssetPath) throws TMXLoadException {
 		try {
+			setAssetBasePath(pAssetPath);
 			return this.load(pContext.getAssets().open(pAssetPath));
 		} catch (final IOException e) {
 			throw new TMXLoadException("Could not load TMXTiledMap from asset: " + pAssetPath, e);
@@ -88,6 +95,7 @@ public class TMXLoader {
 
 			final XMLReader xr = sp.getXMLReader();
 			final TMXParser tmxParser = new TMXParser(this.mContext, this.mTextureManager, this.mTextureOptions, this.mTMXTilePropertyListener);
+			tmxParser.setAssetBasePath(sAssetBasePath);
 			xr.setContentHandler(tmxParser);
 
 			xr.parse(new InputSource(new BufferedInputStream(pInputStream)));
@@ -102,7 +110,7 @@ public class TMXLoader {
 			throw new TMXLoadException(e);
 		}
 	}
-
+	
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

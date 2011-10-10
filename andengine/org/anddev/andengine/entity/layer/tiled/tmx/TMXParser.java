@@ -1,6 +1,7 @@
 package org.anddev.andengine.entity.layer.tiled.tmx;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXLoader.ITMXTilePropertiesListener;
@@ -13,6 +14,8 @@ import org.anddev.andengine.util.Debug;
 import org.anddev.andengine.util.SAXUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributeListImpl;
+import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
@@ -59,6 +62,7 @@ public class TMXParser extends DefaultHandler implements TMXConstants {
 	private boolean mInData;
 	private boolean mInObjectGroup;
 	private boolean mInObject;
+	private static URI sAssetBasePath;
 
 	// ===========================================================
 	// Constructors
@@ -74,9 +78,20 @@ public class TMXParser extends DefaultHandler implements TMXConstants {
 	// ===========================================================
 	// Getter & Setter
 	// ===========================================================
+	public void setAssetBasePath(URI pAssetPath) {
+		TMXParser.sAssetBasePath = pAssetPath;
+	}
 
 	TMXTiledMap getTMXTiledMap() {
 		return this.mTMXTiledMap;
+	}
+	
+	private Attributes setAttributes(final Attributes pAttributes) {
+		final AttributesImpl attrs = new AttributesImpl(pAttributes);
+		String imgSource = attrs.getValue(TAG_IMAGE_ATTRIBUTE_SOURCE);
+		int index = attrs.getIndex(TAG_IMAGE_ATTRIBUTE_SOURCE);
+		attrs.setValue(index, sAssetBasePath.resolve(imgSource).getPath());
+		return attrs;
 	}
 
 	// ===========================================================
@@ -106,7 +121,7 @@ public class TMXParser extends DefaultHandler implements TMXConstants {
 		} else if(pLocalName.equals(TAG_IMAGE)){
 			this.mInImage = true;
 			final ArrayList<TMXTileSet> tmxTileSets = this.mTMXTiledMap.getTMXTileSets();
-			tmxTileSets.get(tmxTileSets.size() - 1).setImageSource(this.mContext, this.mTextureManager, pAttributes);
+			tmxTileSets.get(tmxTileSets.size() - 1).setImageSource(this.mContext, this.mTextureManager, setAttributes(pAttributes));
 		} else if(pLocalName.equals(TAG_TILE)) {
 			this.mInTile = true;
 			if(this.mInTileset) {
