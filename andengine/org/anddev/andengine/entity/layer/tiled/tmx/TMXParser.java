@@ -14,7 +14,6 @@ import org.anddev.andengine.util.Debug;
 import org.anddev.andengine.util.SAXUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributeListImpl;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
