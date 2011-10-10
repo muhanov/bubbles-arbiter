@@ -6,7 +6,6 @@ import org.anddev.andengine.entity.scene.menu.animator.BaseMenuAnimator;
 import org.anddev.andengine.entity.scene.menu.item.IMenuItem;
 import org.anddev.andengine.entity.text.Text;
 import org.anddev.andengine.opengl.font.Font;
-import org.anddev.andengine.util.HorizontalAlign;
 
 public class GameMenuAnimator extends BaseMenuAnimator {
     final private int DEFAULT_RAW_LENGTH = 5;
@@ -20,7 +19,6 @@ public class GameMenuAnimator extends BaseMenuAnimator {
     public void buildAnimations(ArrayList<IMenuItem> pMenuItems, float pCameraWidth,
             float pCameraHeight) {
         // do nothing
-
     }
 
     @Override

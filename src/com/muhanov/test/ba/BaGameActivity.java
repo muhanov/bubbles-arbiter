@@ -22,12 +22,14 @@ import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.shape.IShape;
+import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
+import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
 import android.view.Display;
 
@@ -44,7 +46,7 @@ public class BaGameActivity extends MenuGameActivity {
     private Camera mCamera;
     private TMXLoader mLevelLoader;
     private TextureRegion mBubbleTextureRegion;
-    private TextureRegion mDouble;
+    private TiledTextureRegion mHero;
 
     @Override
     public Engine onLoadEngine() {
@@ -62,17 +64,16 @@ public class BaGameActivity extends MenuGameActivity {
     public void onLoadResources() {
         BitmapTextureAtlas texture = new BitmapTextureAtlas(128, 128,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        BitmapTextureAtlas texture2 = new BitmapTextureAtlas(128, 128,
+        BitmapTextureAtlas textureHero = new BitmapTextureAtlas(512, 256,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         mBubbleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture,
                 this, "bubble.png", 0, 0);
-        mDouble = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture2, this,
-                "arrow.png", 0, 0);
+        mHero = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(textureHero, this,
+                "cat.png", 0, 0, 8, 4);
 
         setItemBgTextureRegion(mBubbleTextureRegion);
-        mEngine.getTextureManager().loadTexture(texture);
-        mEngine.getTextureManager().loadTexture(texture2);
+        mEngine.getTextureManager().loadTextures(texture, textureHero);
         loadMenuTextures();
     }
 
@@ -134,9 +135,13 @@ public class BaGameActivity extends MenuGameActivity {
             e = new Circle(object.getX(), object.getY(), vx, vy, tiledMap
                     .getTextureRegionFromGlobalTileID(gid));
         } else if (type.equals("hero")) {
-            e = new PhysicalSprite(object.getX(), object.getY(), tiledMap
-                    .getTextureRegionFromGlobalTileID(gid));
-            e.setScale(1.9f, 1.9f);
+            final AnimatedSprite hero = new AnimatedSprite(object.getX(), object.getY(), mHero);
+            hero.animate(new long[] { 100, 100, 100, 100, 100, 100, 100, 100 }, 8, 15, true);
+            // e = new PhysicalSprite(object.getX(), object.getY(), tiledMap
+            // .getTextureRegionFromGlobalTileID(gid));
+            hero.setScale(1.9f, 1.9f);
+            hero.registerUpdateHandler(new PhysicsHandler(hero));
+            e = hero;
         }
         return e;
     }
@@ -167,8 +172,6 @@ public class BaGameActivity extends MenuGameActivity {
         line3.setColor(C(255), C(0), C(0));
 
         final Sprite ds = new Circle(0, 300, 100f, 0f, mBubbleTextureRegion);
-        final Sprite arrow = new Sprite(0, 0, mDouble);
-        ds.attachChild(arrow);
 
         scene.attachChild(bubble);
         scene.attachChild(bubble2);
@@ -180,7 +183,7 @@ public class BaGameActivity extends MenuGameActivity {
         scene.attachChild(line3);
         scene.attachChild(ds);
     }
-
+    
     private class InternalOnSceneTouchListener implements IOnSceneTouchListener {
 
         @Override
@@ -194,6 +197,8 @@ public class BaGameActivity extends MenuGameActivity {
                     if (shape instanceof PhysicalSprite) {
                         PhysicalSprite ps = (PhysicalSprite) shape;
                         ps.update();
+                    } else if (shape instanceof AnimatedSprite) {
+                        AnimatedSprite as = (AnimatedSprite) shape;
                     }
                     break;
                 }
