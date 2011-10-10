@@ -14,6 +14,7 @@ import org.anddev.andengine.util.Debug;
 import org.anddev.andengine.util.SAXUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.Attributes2Impl;
 import org.xml.sax.helpers.AttributesImpl;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -87,8 +88,8 @@ public class TMXParser extends DefaultHandler implements TMXConstants {
 	
 	private Attributes setAttributes(final Attributes pAttributes) {
 		final AttributesImpl attrs = new AttributesImpl(pAttributes);
-		String imgSource = attrs.getValue(TAG_IMAGE_ATTRIBUTE_SOURCE);
-		int index = attrs.getIndex(TAG_IMAGE_ATTRIBUTE_SOURCE);
+		String imgSource = pAttributes.getValue(TAG_IMAGE_ATTRIBUTE_SOURCE);
+		int index = pAttributes.getIndex(TAG_IMAGE_ATTRIBUTE_SOURCE);
 		attrs.setValue(index, sAssetBasePath.resolve(imgSource).getPath());
 		return attrs;
 	}
