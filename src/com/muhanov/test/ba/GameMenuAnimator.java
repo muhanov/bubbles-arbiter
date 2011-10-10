@@ -4,9 +4,17 @@ import java.util.ArrayList;
 
 import org.anddev.andengine.entity.scene.menu.animator.BaseMenuAnimator;
 import org.anddev.andengine.entity.scene.menu.item.IMenuItem;
+import org.anddev.andengine.entity.text.Text;
+import org.anddev.andengine.opengl.font.Font;
+import org.anddev.andengine.util.HorizontalAlign;
 
 public class GameMenuAnimator extends BaseMenuAnimator {
     final private int DEFAULT_RAW_LENGTH = 5;
+    private final Font mFont;
+
+    public GameMenuAnimator(final Font font) {
+        mFont = font;
+    }
 
     @Override
     public void buildAnimations(ArrayList<IMenuItem> pMenuItems, float pCameraWidth,
@@ -25,6 +33,9 @@ public class GameMenuAnimator extends BaseMenuAnimator {
             float offsetX = baseX + 2 * (col % DEFAULT_RAW_LENGTH) * menuItem.getWidthScaled();
             float offsetY = baseY + 2 * (col / DEFAULT_RAW_LENGTH) * menuItem.getHeightScaled();
             menuItem.setPosition(offsetX, offsetY);
+            final Text itemNum = new Text(0, menuItem.getHeight() / 2, mFont, String
+                    .valueOf(col + 1), HorizontalAlign.CENTER);
+            menuItem.attachChild(itemNum);
         }
     }
 

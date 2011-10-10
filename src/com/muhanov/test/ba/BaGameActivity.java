@@ -1,6 +1,5 @@
 package com.muhanov.test.ba;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import org.anddev.andengine.engine.Engine;
@@ -135,7 +134,7 @@ public class BaGameActivity extends MenuGameActivity {
             e = new Circle(object.getX(), object.getY(), vx, vy, tiledMap
                     .getTextureRegionFromGlobalTileID(gid));
         } else if (type.equals("hero")) {
-            e = new Sprite(object.getX(), object.getY(), tiledMap
+            e = new PhysicalSprite(object.getX(), object.getY(), tiledMap
                     .getTextureRegionFromGlobalTileID(gid));
             e.setScale(1.9f, 1.9f);
         }

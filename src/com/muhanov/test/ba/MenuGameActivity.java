@@ -8,26 +8,32 @@ import org.anddev.andengine.entity.scene.menu.MenuScene;
 import org.anddev.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
 import org.anddev.andengine.entity.scene.menu.item.IMenuItem;
 import org.anddev.andengine.entity.scene.menu.item.SpriteMenuItem;
+import org.anddev.andengine.opengl.font.Font;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.ui.activity.BaseGameActivity;
 
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.KeyEvent;
 
 abstract public class MenuGameActivity extends BaseGameActivity implements IOnMenuItemClickListener {
     private MenuScene mMenuScene;
     private BitmapTextureAtlas mMenuTexture;
     private TextureRegion mMenuItemBgRegion;
-    
+
+    private BitmapTextureAtlas mFontTexture;
+    private Font mFont;
+
     public void openMenu() {
         mEngine.getScene().setChildScene(mMenuScene, false, true, true);
     }
-    
+
     public void closeMenu() {
         mEngine.getScene().getChildScene().back();
     }
-    
+
     @Override
     public boolean onMenuItemClicked(MenuScene pMenuScene, IMenuItem pMenuItem,
             float pMenuItemLocalX, float pMenuItemLocalY) {
@@ -35,21 +41,25 @@ abstract public class MenuGameActivity extends BaseGameActivity implements IOnMe
         loadLevel(itemId);
         return true;
     }
-    
+
     public abstract void loadLevel(int levelId);
-    
+
     protected void setItemBgTextureRegion(final TextureRegion bg) {
         mMenuItemBgRegion = bg;
     }
-    
+
     protected void loadMenuTextures() {
         mMenuTexture = new BitmapTextureAtlas(128, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        mEngine.getTextureManager().loadTexture(mMenuTexture);
+        mFontTexture = new BitmapTextureAtlas(128, 128, TextureOptions.BILINEAR_PREMULTIPLYALPHA);
+        mFont = new Font(mFontTexture, Typeface.create(Typeface.DEFAULT, Typeface.NORMAL), 32, true, Color.BLACK);
+
+        mEngine.getTextureManager().loadTextures(mMenuTexture, mFontTexture);
+        getFontManager().loadFont(mFont);
     }
-    
+
     protected MenuScene createMenuScene(final Camera camera) {
         mMenuScene = new MenuScene(camera);
-        mMenuScene.setMenuAnimator(new GameMenuAnimator());
+        mMenuScene.setMenuAnimator(new GameMenuAnimator(mFont));
         for (int i = 0; i < 7; ++i) {
             addMenuItem(i);
         }
@@ -69,7 +79,7 @@ abstract public class MenuGameActivity extends BaseGameActivity implements IOnMe
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_MENU) {
             final Scene scene = mEngine.getScene();
-            if(scene.hasChildScene()) {
+            if (scene.hasChildScene()) {
                 /* Remove the menu and reset it. */
                 closeMenu();
             } else {
