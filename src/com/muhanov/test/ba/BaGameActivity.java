@@ -31,6 +31,7 @@ import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextur
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
+import android.util.Log;
 import android.view.Display;
 
 public class BaGameActivity extends MenuGameActivity {
@@ -189,6 +190,7 @@ public class BaGameActivity extends MenuGameActivity {
         @Override
         public boolean onSceneTouchEvent(Scene scene, TouchEvent event) {
             boolean result = false;
+            Log.i("touch", "event="+event.getAction());
             int count = scene.getChildCount();
             for (int i = 0; i < count; ++i) {
                 IShape shape = (IShape) scene.getChild(i);
