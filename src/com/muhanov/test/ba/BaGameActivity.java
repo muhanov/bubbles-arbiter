@@ -18,6 +18,7 @@ import org.anddev.andengine.entity.layer.tiled.tmx.TMXProperties;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXTiledMap;
 import org.anddev.andengine.entity.layer.tiled.tmx.util.exception.TMXLoadException;
 import org.anddev.andengine.entity.primitive.Line;
+import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
@@ -187,10 +188,30 @@ public class BaGameActivity extends MenuGameActivity {
     
     private class InternalOnSceneTouchListener implements IOnSceneTouchListener {
 
+        private Rectangle mCursor;
+        private final static int SHIFT = 140; 
+        
+        private void handleCursor(final Scene scene, final TouchEvent event) {
+            switch (event.getAction()) {
+            case TouchEvent.ACTION_DOWN:
+                mCursor = new Rectangle(event.getX(), event.getY() - SHIFT, 70, 70);
+                mCursor.setColor(C(0), C(255), C(0), 0.7f);
+                scene.attachChild(mCursor);
+                break;
+            case TouchEvent.ACTION_UP:
+                scene.detachChild(mCursor);
+                mCursor = null;
+                break;
+            case TouchEvent.ACTION_MOVE:
+                mCursor.setPosition(event.getX(), event.getY() - SHIFT);
+                break;
+            }
+        }
+        
         @Override
         public boolean onSceneTouchEvent(Scene scene, TouchEvent event) {
             boolean result = false;
-            Log.i("touch", "event="+event.getAction());
+            handleCursor(scene, event);
             int count = scene.getChildCount();
             for (int i = 0; i < count; ++i) {
                 IShape shape = (IShape) scene.getChild(i);
