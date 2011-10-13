@@ -1,4 +1,4 @@
-package com.muhanov.test.ba;
+package com.muhanov.ba;
 
 import java.util.ArrayList;
 

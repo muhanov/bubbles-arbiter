@@ -1,4 +1,4 @@
-package com.muhanov.test.ba;
+package com.muhanov.entity.sprite;
 
 import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.entity.sprite.Sprite;

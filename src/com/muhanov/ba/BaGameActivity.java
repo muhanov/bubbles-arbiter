@@ -1,4 +1,4 @@
-package com.muhanov.test.ba;
+package com.muhanov.ba;
 
 import java.util.ArrayList;
 
@@ -31,6 +31,10 @@ import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
+
+import com.muhanov.entity.sprite.Circle;
+import com.muhanov.entity.sprite.PhysicalSprite;
+import com.muhanov.entity.util.ProjectionsMap;
 
 import android.util.Log;
 import android.view.Display;

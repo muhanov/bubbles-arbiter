@@ -1,4 +1,4 @@
-package com.muhanov.test.ba;
+package com.muhanov.ba;
 
 import javax.microedition.khronos.opengles.GL10;
 

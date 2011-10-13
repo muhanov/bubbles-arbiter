@@ -1,4 +1,4 @@
-package com.muhanov.test.ba;
+package com.muhanov.entity.sprite;
 
 import org.anddev.andengine.entity.shape.IShape;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;

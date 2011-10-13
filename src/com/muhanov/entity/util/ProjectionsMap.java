@@ -1,4 +1,4 @@
-package com.muhanov.test.ba;
+package com.muhanov.entity.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
