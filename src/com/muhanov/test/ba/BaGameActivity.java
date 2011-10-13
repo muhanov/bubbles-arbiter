@@ -189,13 +189,16 @@ public class BaGameActivity extends MenuGameActivity {
     private class InternalOnSceneTouchListener implements IOnSceneTouchListener {
 
         private Rectangle mCursor;
-        private final static int SHIFT = 140; 
         
         private void handleCursor(final Scene scene, final TouchEvent event) {
+            float w = 70f;
+            float h = 70f;
+            float sx = - 0.5f * w; 
+            float sy = - 0.5f * h; 
             switch (event.getAction()) {
             case TouchEvent.ACTION_DOWN:
-                mCursor = new Rectangle(event.getX(), event.getY() - SHIFT, 70, 70);
-                mCursor.setColor(C(0), C(255), C(0), 0.7f);
+                mCursor = new Rectangle(event.getX() + sx, event.getY() + sy, w, h);
+                mCursor.setColor(C(0), C(255), C(0), 0.4f);
                 scene.attachChild(mCursor);
                 break;
             case TouchEvent.ACTION_UP:
@@ -203,7 +206,7 @@ public class BaGameActivity extends MenuGameActivity {
                 mCursor = null;
                 break;
             case TouchEvent.ACTION_MOVE:
-                mCursor.setPosition(event.getX(), event.getY() - SHIFT);
+                mCursor.setPosition(event.getX() + sx, event.getY() + sy);
                 break;
             }
         }
