@@ -32,13 +32,12 @@ import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextur
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
+import android.view.Display;
+
 import com.muhanov.entity.ITouchEntity;
 import com.muhanov.entity.sprite.Circle;
 import com.muhanov.entity.sprite.PhysicalSprite;
 import com.muhanov.entity.util.ProjectionsMap;
-
-import android.util.Log;
-import android.view.Display;
 
 public class BaGameActivity extends MenuGameActivity {
     private static final int CAMERA_WIDTH = 800;
@@ -153,53 +152,15 @@ public class BaGameActivity extends MenuGameActivity {
         return e;
     }
 
-    private void addChildren(final Scene scene) {
-        final PhysicalSprite bubble = new Circle(0, 100, 100f, 0f, mBubbleTextureRegion);
-
-        final PhysicalSprite bubble2 = new Circle(bubble.getX() + 2 * bubble.getWidth(), 100,
-                -100f, 0, mBubbleTextureRegion);
-
-        final PhysicalSprite bubble3 = new Circle(bubble.getX() + 4 * bubble.getWidth(), 100, 100f,
-                0f, mBubbleTextureRegion);
-
-        final Sprite bubble4 = new Circle(bubble.getX() + 3 * bubble.getWidth(), bubble.getY() + 1
-                * bubble.getHeight(), -100f, -100f, mBubbleTextureRegion);
-
-        final Sprite bubble5 = new Circle(bubble.getX() + 6 * bubble.getWidth(), 100, 0f, 0f,
-                mBubbleTextureRegion);
-
-        float lineX = bubble.getX() + 3 * bubble.getWidth();
-        final Line line = new Line(lineX, 0, lineX, mHeight);
-        line.setColor(C(255), C(0), C(0));
-        float lineX2 = lineX + bubble.getWidth();
-        final Line line2 = new Line(lineX2, 0, lineX2, mHeight);
-        line2.setColor(C(255), C(0), C(0));
-        float lineX3 = lineX - bubble.getWidth();
-        final Line line3 = new Line(lineX3, 0, lineX3, mHeight);
-        line3.setColor(C(255), C(0), C(0));
-
-        final Sprite ds = new Circle(0, 300, 100f, 0f, mBubbleTextureRegion);
-
-        scene.attachChild(bubble);
-        scene.attachChild(bubble2);
-        scene.attachChild(bubble3);
-        scene.attachChild(bubble4);
-        scene.attachChild(bubble5);
-        scene.attachChild(line);
-        scene.attachChild(line2);
-        scene.attachChild(line3);
-        scene.attachChild(ds);
-    }
-    
     private class InternalOnSceneTouchListener implements IOnSceneTouchListener {
 
         private Rectangle mCursor;
-        
+
         private void handleCursor(final Scene scene, final TouchEvent event) {
             float w = 70f;
             float h = 70f;
-            float sx = - 0.5f * w; 
-            float sy = - 0.5f * h; 
+            float sx = -0.5f * w;
+            float sy = -0.5f * h;
             switch (event.getAction()) {
             case TouchEvent.ACTION_DOWN:
                 mCursor = new Rectangle(event.getX() + sx, event.getY() + sy, w, h);
@@ -215,7 +176,7 @@ public class BaGameActivity extends MenuGameActivity {
                 break;
             }
         }
-        
+
         @Override
         public boolean onSceneTouchEvent(Scene scene, TouchEvent event) {
             boolean result = false;
@@ -259,10 +220,6 @@ public class BaGameActivity extends MenuGameActivity {
         @Override
         public void reset() {
             // do nothing
-        }
-
-        private boolean isOnScreen(IShape shape) {
-            return !(Math.abs(shape.getX()) > mWidth || Math.abs(shape.getY()) > mHeight);
         }
 
         private void handleCollision(final Circle c1, final Circle c2) {
