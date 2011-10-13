@@ -4,7 +4,9 @@ import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 
-public class PhysicalSprite extends Sprite {
+import com.muhanov.entity.ITouchEntity;
+
+public class PhysicalSprite extends Sprite implements ITouchEntity {
 
     private PhysicsHandler mPhysicsHandler;
     protected float mInitialVelocityX;
@@ -36,7 +38,8 @@ public class PhysicalSprite extends Sprite {
         mPhysicsHandler.setEnabled(isEnabled);
     }
     
-    public void update() {
+    @Override
+    public void touch() {
         mPhysicsHandler.setVelocity(mInitialVelocityX, mInitialVelocityY);
         mPhysicsHandler.setEnabled(true);
     }

@@ -32,6 +32,7 @@ import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextur
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
+import com.muhanov.entity.ITouchEntity;
 import com.muhanov.entity.sprite.Circle;
 import com.muhanov.entity.sprite.PhysicalSprite;
 import com.muhanov.entity.util.ProjectionsMap;
@@ -224,11 +225,9 @@ public class BaGameActivity extends MenuGameActivity {
                 IShape shape = (IShape) scene.getChild(i);
                 result = shape.contains(event.getX(), event.getY());
                 if (result) {
-                    if (shape instanceof PhysicalSprite) {
-                        PhysicalSprite ps = (PhysicalSprite) shape;
-                        ps.update();
-                    } else if (shape instanceof AnimatedSprite) {
-                        AnimatedSprite as = (AnimatedSprite) shape;
+                    if (shape instanceof ITouchEntity) {
+                        ITouchEntity te = (ITouchEntity) shape;
+                        te.touch();
                     }
                     break;
                 }
