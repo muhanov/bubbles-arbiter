@@ -117,6 +117,12 @@ public class BaGameActivity extends MenuGameActivity {
         } catch (final TMXLoadException e) {
             // do nothing
         }
+        correctHeroPosition();
+    }
+    
+    private void correctHeroPosition() {
+        final Scene scene = mEngine.getScene();
+        
     }
 
     private IEntity createEntity(final TMXTiledMap tiledMap, final TMXObject object,
@@ -142,9 +148,6 @@ public class BaGameActivity extends MenuGameActivity {
         } else if (type.equals("hero")) {
             final Hero hero = new Hero(object.getX(), object.getY(), mHeroTextureRegion);
             hero.setCurrentTileIndex(8);
-//            hero.animate(new long[] { 100, 100, 100, 100, 100, 100, 100, 100 }, 8, 15, true);
-            // e = new PhysicalSprite(object.getX(), object.getY(), tiledMap
-            // .getTextureRegionFromGlobalTileID(gid));
             hero.setScale(1.9f, 1.9f);
             mHero = hero;
             e = hero;
@@ -259,11 +262,6 @@ public class BaGameActivity extends MenuGameActivity {
         private ArrayList<IShape> buildProjectionsMap(final Scene scene, final ProjectionsMap pm) {
             for (int i = 0; i < scene.getChildCount(); ++i) {
                 IShape s = (IShape) scene.getChild(i);
-                /*
-                 * if (isOnScreen(s) == false) { PhysicalSprite ps =
-                 * (PhysicalSprite) s; ps.getPhysicsHandler().setVelocity(0, 0);
-                 * continue; }
-                 */
                 if (s instanceof Circle) {
                     pm.addEntity(s);
                 }
