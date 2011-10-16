@@ -17,13 +17,11 @@ import org.anddev.andengine.entity.layer.tiled.tmx.TMXObjectProperty;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXProperties;
 import org.anddev.andengine.entity.layer.tiled.tmx.TMXTiledMap;
 import org.anddev.andengine.entity.layer.tiled.tmx.util.exception.TMXLoadException;
-import org.anddev.andengine.entity.primitive.Line;
 import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.shape.IShape;
-import org.anddev.andengine.entity.sprite.AnimatedSprite;
 import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.opengl.texture.TextureOptions;
@@ -36,7 +34,7 @@ import android.view.Display;
 
 import com.muhanov.entity.ITouchEntity;
 import com.muhanov.entity.sprite.Circle;
-import com.muhanov.entity.sprite.PhysicalSprite;
+import com.muhanov.entity.sprite.Hero;
 import com.muhanov.entity.util.ProjectionsMap;
 
 public class BaGameActivity extends MenuGameActivity {
@@ -52,7 +50,8 @@ public class BaGameActivity extends MenuGameActivity {
     private Camera mCamera;
     private TMXLoader mLevelLoader;
     private TextureRegion mBubbleTextureRegion;
-    private TiledTextureRegion mHero;
+    private TiledTextureRegion mHeroTextureRegion;
+    private Hero mHero;
 
     @Override
     public Engine onLoadEngine() {
@@ -75,7 +74,7 @@ public class BaGameActivity extends MenuGameActivity {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         mBubbleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture,
                 this, "bubble.png", 0, 0);
-        mHero = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(textureHero, this,
+        mHeroTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(textureHero, this,
                 "cat.png", 0, 0, 8, 4);
 
         setItemBgTextureRegion(mBubbleTextureRegion);
@@ -141,12 +140,13 @@ public class BaGameActivity extends MenuGameActivity {
             e = new Circle(object.getX(), object.getY(), vx, vy, tiledMap
                     .getTextureRegionFromGlobalTileID(gid));
         } else if (type.equals("hero")) {
-            final AnimatedSprite hero = new AnimatedSprite(object.getX(), object.getY(), mHero);
-            hero.animate(new long[] { 100, 100, 100, 100, 100, 100, 100, 100 }, 8, 15, true);
+            final Hero hero = new Hero(object.getX(), object.getY(), mHeroTextureRegion);
+            hero.setCurrentTileIndex(8);
+//            hero.animate(new long[] { 100, 100, 100, 100, 100, 100, 100, 100 }, 8, 15, true);
             // e = new PhysicalSprite(object.getX(), object.getY(), tiledMap
             // .getTextureRegionFromGlobalTileID(gid));
             hero.setScale(1.9f, 1.9f);
-            hero.registerUpdateHandler(new PhysicsHandler(hero));
+            mHero = hero;
             e = hero;
         }
         return e;
@@ -170,6 +170,10 @@ public class BaGameActivity extends MenuGameActivity {
             case TouchEvent.ACTION_UP:
                 scene.detachChild(mCursor);
                 mCursor = null;
+                PhysicsHandler ph = mHero.getPhysicsHandler();
+                ph.setVelocity(100, 0);
+                mHero.animate(new long[] { 100, 100, 100, 100, 100, 100, 100, 100 }, 8, 15, true);
+                mHero.setEnabled(true);
                 break;
             case TouchEvent.ACTION_MOVE:
                 mCursor.setPosition(event.getX() + sx, event.getY() + sy);
