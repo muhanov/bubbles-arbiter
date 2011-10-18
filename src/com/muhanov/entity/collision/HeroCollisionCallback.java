@@ -31,8 +31,9 @@ public class HeroCollisionCallback implements ICollisionCallback {
             float vx = vx1 + vx2;
             float vy = vy1 + vy2;
             final RectF intersection = getIntersection(pCheckShape, pTargetShape);
-            float w = intersection.width();
-            float h = intersection.height();
+            float s = intersection.height() * vx - intersection.width()* vy;
+            float w0 = - s / vy;
+            float h0 = s / vx;
 
         }
         return false;
