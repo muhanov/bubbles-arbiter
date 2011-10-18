@@ -29,10 +29,16 @@ public class Circle extends PhysicalSprite {
 
     @Override
     public boolean collidesWith(IShape other) {
-        final Circle c = (Circle) other;
-        float r = getRadius() + c.getRadius();
-        float l = calculateCenterSpacing(c);
-        return l <= r;
+        boolean res = false;
+        if (other instanceof Circle) {
+            final Circle c = (Circle) other;
+            float r = getRadius() + c.getRadius();
+            float l = calculateCenterSpacing(c);
+            res = (l <= r);
+        } else {
+            res = super.collidesWith(other);
+        }
+        return res;
     }
 
     public static float calculateCenterSpacing(final Circle c1, final Circle c2) {
@@ -40,7 +46,7 @@ public class Circle extends PhysicalSprite {
         float ly = c1.getCenterY() - c2.getCenterY();
         return (float) Math.hypot(lx, ly);
     }
-    
+
     private float calculateCenterSpacing(final Circle c) {
         return Circle.calculateCenterSpacing(this, c);
     }

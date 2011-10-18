@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.anddev.andengine.engine.Engine;
 import org.anddev.andengine.engine.camera.Camera;
 import org.anddev.andengine.engine.handler.IUpdateHandler;
+import org.anddev.andengine.engine.handler.collision.CollisionHandler;
 import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
@@ -33,6 +34,9 @@ import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 import android.view.Display;
 
 import com.muhanov.entity.ITouchEntity;
+import com.muhanov.entity.collision.CircleCollisionCallback;
+import com.muhanov.entity.collision.DummyCollisionCallback;
+import com.muhanov.entity.collision.HeroCollisionCallback;
 import com.muhanov.entity.sprite.Circle;
 import com.muhanov.entity.sprite.Hero;
 import com.muhanov.entity.util.ProjectionsMap;
@@ -129,7 +133,7 @@ public class BaGameActivity extends MenuGameActivity {
             mHero.setPosition(x, y);
         } else {
             // no collisions
-            mHero.getPhysicsHandler().setVelocity(0, 10);
+            mHero.getPhysicsHandler().setVelocity(0, 100);
             mHero.touch();
         }
     }
@@ -229,6 +233,9 @@ public class BaGameActivity extends MenuGameActivity {
     }
 
     private class InternalSceneUpdateHandler implements IUpdateHandler {
+        private final CircleCollisionCallback mCircleCb = new CircleCollisionCallback();
+        private final DummyCollisionCallback mDummyCb = new DummyCollisionCallback();
+        private final HeroCollisionCallback mHeroCb = new HeroCollisionCallback();
 
         @Override
         public void onUpdate(float pSecondsElapsed) {
@@ -238,13 +245,9 @@ public class BaGameActivity extends MenuGameActivity {
             ArrayList<IShape> p = buildProjectionsMap(scene, pm);
             final int size = p.size();
             for (int i = 0; i < size; ++i) {
-                for (int j = 0; j < size; ++j) {
-                    Circle c1 = (Circle) p.get(i);
-                    Circle c2 = (Circle) p.get(j);
-                    if (c1 != c2 && c1.collidesWith(c2)) {
-                        handleCollision(c1, c2);
-                    }
-                }
+                IShape shape = p.get(i);
+                CollisionHandler ch = createCollisionHandler(shape, p);
+                ch.onUpdate(pSecondsElapsed);
             }
         }
 
@@ -253,44 +256,26 @@ public class BaGameActivity extends MenuGameActivity {
             // do nothing
         }
 
-        private void handleCollision(final Circle c1, final Circle c2) {
-            PhysicsHandler ph1 = c1.getPhysicsHandler();
-            float vx1 = ph1.isEnabled() ? ph1.getVelocityX() : 0.0f;
-            float vy1 = ph1.isEnabled() ? ph1.getVelocityY() : 0.0f;
-            float v1 = (float) Math.hypot(vx1, vy1);
-            PhysicsHandler ph2 = c2.getPhysicsHandler();
-            float vx2 = ph2.isEnabled() ? ph2.getVelocityX() : 0.0f;
-            float vy2 = ph2.isEnabled() ? ph2.getVelocityY() : 0.0f;
-            float v2 = (float) Math.hypot(vx2, vy2);
-
-            // current distance between centers
-            float L = Circle.calculateCenterSpacing(c1, c2);
-            // distance between centers at collision moment
-            float L0 = c1.getRadius() + c2.getRadius();
-            // calculate time at collision moment
-            float dTc = (L - L0) / (v1 + v2);
-            // get coordinates at collision moment
-            float x1 = c1.getX() + (vx1 - vx2) * dTc;
-            float y1 = c1.getY() + (vy1 - vy2) * dTc;
-            ph1.setVelocity(vx2, vy2);
-            c1.setPosition(x1, y1);
-            c1.setEnabled(true);
-
-            float x2 = c2.getX() + (vx2 - vx1) * dTc;
-            float y2 = c2.getY() + (vy2 - vy1) * dTc;
-            ph2.setVelocity(vx1, vy1);
-            c2.setPosition(x2, y2);
-            c2.setEnabled(true);
+        private CollisionHandler createCollisionHandler(final IShape shape,
+                final ArrayList<IShape> entities) {
+            CollisionHandler ch = null;
+            if (shape instanceof Circle) {
+                ch = new CollisionHandler(mCircleCb, shape, entities);
+            } else if (shape instanceof Hero) {
+                ch = new CollisionHandler(mHeroCb, shape, entities);
+            } else {
+                ch = new CollisionHandler(mDummyCb, shape, entities);
+            }
+            return ch;
         }
 
         private ArrayList<IShape> buildProjectionsMap(final Scene scene, final ProjectionsMap pm) {
             for (int i = 0; i < scene.getChildCount(); ++i) {
                 IShape s = (IShape) scene.getChild(i);
-                if (s instanceof Circle) {
-                    pm.addEntity(s);
-                }
+                pm.addEntity(s);
             }
             return pm.buildMap();
         }
     }
+
 }
