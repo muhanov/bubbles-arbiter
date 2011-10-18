@@ -40,7 +40,7 @@ public class PhysicalSprite extends Sprite implements ITouchEntity {
     
     @Override
     public void touch() {
-        mPhysicsHandler.setVelocity(mInitialVelocityX, mInitialVelocityY);
+        //mPhysicsHandler.setVelocity(mInitialVelocityX, mInitialVelocityY);
         mPhysicsHandler.setEnabled(true);
     }
     

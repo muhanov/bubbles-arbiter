@@ -74,8 +74,8 @@ public class BaGameActivity extends MenuGameActivity {
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
         mBubbleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture,
                 this, "bubble.png", 0, 0);
-        mHeroTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(textureHero, this,
-                "cat.png", 0, 0, 8, 4);
+        mHeroTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(
+                textureHero, this, "cat.png", 0, 0, 8, 4);
 
         setItemBgTextureRegion(mBubbleTextureRegion);
         mEngine.getTextureManager().loadTextures(texture, textureHero);
@@ -119,10 +119,33 @@ public class BaGameActivity extends MenuGameActivity {
         }
         correctHeroPosition();
     }
-    
+
     private void correctHeroPosition() {
+        IShape shape = findCollisionObject(mHero);
+        if (shape != null) {
+            // has collision
+            float x = mHero.getX();
+            float y = shape.getY() - mHero.getHeightScaled();
+            mHero.setPosition(x, y);
+        } else {
+            // no collisions
+            mHero.getPhysicsHandler().setVelocity(0, 10);
+            mHero.touch();
+        }
+    }
+
+    private IShape findCollisionObject(final IShape obj) {
+        IShape foundShape = null;
         final Scene scene = mEngine.getScene();
-        
+        int count = scene.getChildCount();
+        for (int i = 0; i < count; ++i) {
+            IShape shape = (IShape) scene.getChild(i);
+            if (shape != obj && obj.collidesWith(shape)) {
+                foundShape = shape;
+                break;
+            }
+        }
+        return foundShape;
     }
 
     private IEntity createEntity(final TMXTiledMap tiledMap, final TMXObject object,
@@ -149,6 +172,7 @@ public class BaGameActivity extends MenuGameActivity {
             final Hero hero = new Hero(object.getX(), object.getY(), mHeroTextureRegion);
             hero.setCurrentTileIndex(8);
             hero.setScale(1.9f, 1.9f);
+            hero.setScaleCenter(0, 0);
             mHero = hero;
             e = hero;
         }

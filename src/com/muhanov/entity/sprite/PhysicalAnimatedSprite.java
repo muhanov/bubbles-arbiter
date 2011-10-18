@@ -40,7 +40,7 @@ public class PhysicalAnimatedSprite extends AnimatedSprite implements ITouchEnti
     
     @Override
     public void touch() {
-        mPhysicsHandler.setVelocity(mInitialVelocityX, mInitialVelocityY);
+        //mPhysicsHandler.setVelocity(mInitialVelocityX, mInitialVelocityY);
         mPhysicsHandler.setEnabled(true);
     }
     

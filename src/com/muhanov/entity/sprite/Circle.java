@@ -12,7 +12,7 @@ public class Circle extends PhysicalSprite {
 
     public Circle(float x, float y, float vx, float vy, TextureRegion texture) {
         super(x, y, vx, vy, texture);
-        mRadius = 0.5f * getWidth();
+        mRadius = 0.5f * getWidthScaled();
     }
 
     public float getRadius() {
@@ -20,11 +20,11 @@ public class Circle extends PhysicalSprite {
     }
 
     public float getCenterX() {
-        return getX() + 0.5f * getWidth();
+        return getX() + 0.5f * getWidthScaled();
     }
 
     public float getCenterY() {
-        return getY() + 0.5f * getHeight();
+        return getY() + 0.5f * getHeightScaled();
     }
 
     @Override

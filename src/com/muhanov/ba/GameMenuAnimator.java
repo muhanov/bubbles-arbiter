@@ -32,8 +32,8 @@ public class GameMenuAnimator extends BaseMenuAnimator {
             float offsetY = baseY + 2 * (col / DEFAULT_RAW_LENGTH) * menuItem.getHeightScaled();
             menuItem.setPosition(offsetX, offsetY);
             final String text = String.valueOf(col + 1);
-            float sh = 0.5f * (menuItem.getHeight() - mFont.getLineHeight());
-            float sw = 0.5f * (menuItem.getWidth() - mFont.getStringWidth(text));
+            float sh = 0.5f * (menuItem.getHeightScaled() - mFont.getLineHeight());
+            float sw = 0.5f * (menuItem.getWidthScaled() - mFont.getStringWidth(text));
             final Text itemNum = new Text(sw, sh, mFont, text);
             menuItem.attachChild(itemNum);
         }

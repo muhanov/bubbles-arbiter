@@ -28,7 +28,7 @@
    </properties>
   </object>
   <object type="circle" gid="1" x="560" y="350"/>
-  <object type="hero" gid="11" x="70" y="280"/>
+  <object type="hero" gid="11" x="70" y="230"/>
   <object gid="35" x="0" y="350"/>
   <object gid="36" x="210" y="350"/>
   <object gid="37" x="280" y="350"/>
