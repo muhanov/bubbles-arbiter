@@ -24,19 +24,21 @@ public class HeroCollisionCallback implements ICollisionCallback {
         float vy1 = ph1.getVelocityY();
         if (pTargetShape instanceof PhysicalSprite) {
             // TODO: collision with physical sprite
-        } else {
-            float vx2 = 0.0f;
-            float vy2 = 0.0f;
-
-            float vx = vx1 + vx2;
-            float vy = vy1 + vy2;
-            final RectF intersection = getIntersection(pCheckShape, pTargetShape);
-            float s = intersection.height() * vx - intersection.width()* vy;
-            float w0 = - s / vy;
-            float h0 = s / vx;
-
+            return true;
         }
-        return false;
+        float vx2 = 0.0f;
+        float vy2 = 0.0f;
+
+        float vx = vx1 + vx2;
+        float vy = vy1 + vy2;
+        final RectF intersection = getIntersection(pCheckShape, pTargetShape);
+        if (intersection != null) {
+            float s = intersection.height() * vx - intersection.width() * vy;
+            float w0 = -s / vy;
+            float h0 = s / vx;
+            float w = w0 + h0;
+        }
+        return true;
     }
 
     private RectF getIntersection(final IShape shape1, final IShape shape2) {
@@ -49,7 +51,7 @@ public class HeroCollisionCallback implements ICollisionCallback {
         top = shape2.getY();
         right = left + shape2.getWidthScaled();
         bottom = top + shape2.getHeightScaled();
-        mIntersection.intersect(left, top, right, bottom);
-        return mIntersection;
+        boolean isIntersect = mIntersection.intersect(left, top, right, bottom);
+        return (isIntersect) ? mIntersection : null;
     }
 }
