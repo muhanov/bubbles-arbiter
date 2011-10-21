@@ -6,7 +6,6 @@ import org.anddev.andengine.entity.shape.IShape;
 
 import android.graphics.RectF;
 
-import com.muhanov.entity.sprite.Circle;
 import com.muhanov.entity.sprite.Hero;
 import com.muhanov.entity.sprite.PhysicalSprite;
 
@@ -33,10 +32,13 @@ public class HeroCollisionCallback implements ICollisionCallback {
         float vy = vy1 + vy2;
         final RectF intersection = getIntersection(pCheckShape, pTargetShape);
         if (intersection != null) {
-            float s = intersection.height() * vx - intersection.width() * vy;
-            float w0 = -s / vy;
-            float h0 = s / vx;
-            float w = w0 + h0;
+            float h = intersection.height();
+            float w = intersection.width();
+            float s = h * vx - w * vy;
+            float w0 = (vy == 0) ? w : -s / vy;
+            float h0 = (vx == 0) ? h : s / vx;
+            hero.setPosition(hero.getX() - w + w0, hero.getY() - h + h0);
+            ph1.setVelocity(0, 0);
         }
         return true;
     }
