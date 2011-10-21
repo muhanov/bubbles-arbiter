@@ -35,10 +35,10 @@ public class HeroCollisionCallback implements ICollisionCallback {
             float h = intersection.height();
             float w = intersection.width();
             float s = h * vx - w * vy;
-            float w0 = (vy == 0) ? w : -s / vy;
-            float h0 = (vx == 0) ? h : s / vx;
-            hero.setPosition(hero.getX() - w + w0, hero.getY() - h + h0);
-            ph1.setVelocity(0, 0);
+            float wd = (vy == 0) ? 0 : -s / vy - w;
+            float hd = (vx == 0) ? 0 : s / vx - h;
+            hero.setPosition(hero.getX() - wd, hero.getY() - hd);
+            //ph1.setVelocity(0, 0);
         }
         return true;
     }
