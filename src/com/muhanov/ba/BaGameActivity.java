@@ -24,9 +24,11 @@ import org.anddev.andengine.opengl.texture.region.TextureRegion;
 import android.view.Display;
 
 import com.muhanov.entity.ITouchEntity;
+import com.muhanov.entity.collision.BaCollisionHandler;
 import com.muhanov.entity.collision.CircleCollisionCallback;
 import com.muhanov.entity.collision.DummyCollisionCallback;
 import com.muhanov.entity.collision.HeroCollisionCallback;
+import com.muhanov.entity.collision.HeroLackCollisionCallback;
 import com.muhanov.entity.sprite.Circle;
 import com.muhanov.entity.sprite.Hero;
 import com.muhanov.entity.util.ProjectionsMap;
@@ -146,6 +148,7 @@ public class BaGameActivity extends MenuGameActivity {
         private final CircleCollisionCallback mCircleCb = new CircleCollisionCallback();
         private final DummyCollisionCallback mDummyCb = new DummyCollisionCallback();
         private final HeroCollisionCallback mHeroCb = new HeroCollisionCallback();
+        private final HeroLackCollisionCallback mHeroLackCb = new HeroLackCollisionCallback();
 
         @Override
         public void onUpdate(float pSecondsElapsed) {
@@ -156,7 +159,7 @@ public class BaGameActivity extends MenuGameActivity {
             final int size = p.size();
             for (int i = 0; i < size; ++i) {
                 IShape shape = p.get(i);
-                CollisionHandler ch = createCollisionHandler(shape, p);
+                BaCollisionHandler ch = createCollisionHandler(shape, p);
                 ch.onUpdate(pSecondsElapsed);
             }
         }
@@ -166,15 +169,15 @@ public class BaGameActivity extends MenuGameActivity {
             // do nothing
         }
 
-        private CollisionHandler createCollisionHandler(final IShape shape,
+        private BaCollisionHandler createCollisionHandler(final IShape shape,
                 final ArrayList<IShape> entities) {
-            CollisionHandler ch = null;
+            BaCollisionHandler ch = null;
             if (shape instanceof Circle) {
-                ch = new CollisionHandler(mCircleCb, shape, entities);
+                ch = new BaCollisionHandler(mCircleCb, shape, entities);
             } else if (shape instanceof Hero) {
-                ch = new CollisionHandler(mHeroCb, shape, entities);
+                ch = new BaCollisionHandler(mHeroCb, shape, entities);
             } else {
-                ch = new CollisionHandler(mDummyCb, shape, entities);
+                ch = new BaCollisionHandler(mDummyCb, shape, entities);
             }
             return ch;
         }
