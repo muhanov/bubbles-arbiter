@@ -10,26 +10,16 @@ import org.anddev.andengine.engine.handler.physics.PhysicsHandler;
 import org.anddev.andengine.engine.options.EngineOptions;
 import org.anddev.andengine.engine.options.EngineOptions.ScreenOrientation;
 import org.anddev.andengine.engine.options.resolutionpolicy.RatioResolutionPolicy;
-import org.anddev.andengine.entity.IEntity;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXLoader;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXObject;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXObjectGroup;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXObjectProperty;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXProperties;
-import org.anddev.andengine.entity.layer.tiled.tmx.TMXTiledMap;
-import org.anddev.andengine.entity.layer.tiled.tmx.util.exception.TMXLoadException;
 import org.anddev.andengine.entity.primitive.Rectangle;
 import org.anddev.andengine.entity.scene.Scene;
 import org.anddev.andengine.entity.scene.Scene.IOnSceneTouchListener;
 import org.anddev.andengine.entity.scene.background.ColorBackground;
 import org.anddev.andengine.entity.shape.IShape;
-import org.anddev.andengine.entity.sprite.Sprite;
 import org.anddev.andengine.input.touch.TouchEvent;
 import org.anddev.andengine.opengl.texture.TextureOptions;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
 import org.anddev.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlasTextureRegionFactory;
 import org.anddev.andengine.opengl.texture.region.TextureRegion;
-import org.anddev.andengine.opengl.texture.region.TiledTextureRegion;
 
 import android.view.Display;
 
@@ -40,6 +30,7 @@ import com.muhanov.entity.collision.HeroCollisionCallback;
 import com.muhanov.entity.sprite.Circle;
 import com.muhanov.entity.sprite.Hero;
 import com.muhanov.entity.util.ProjectionsMap;
+import com.muhanov.level.BaLoader;
 
 public class BaGameActivity extends MenuGameActivity {
     private static final int CAMERA_WIDTH = 800;
@@ -52,9 +43,7 @@ public class BaGameActivity extends MenuGameActivity {
     }
 
     private Camera mCamera;
-    private TMXLoader mLevelLoader;
-    private TextureRegion mBubbleTextureRegion;
-    private TiledTextureRegion mHeroTextureRegion;
+    private BaLoader mLevelLoader;
     private Hero mHero;
 
     @Override
@@ -73,16 +62,12 @@ public class BaGameActivity extends MenuGameActivity {
     public void onLoadResources() {
         BitmapTextureAtlas texture = new BitmapTextureAtlas(128, 128,
                 TextureOptions.BILINEAR_PREMULTIPLYALPHA);
-        BitmapTextureAtlas textureHero = new BitmapTextureAtlas(512, 256,
-                TextureOptions.BILINEAR_PREMULTIPLYALPHA);
         BitmapTextureAtlasTextureRegionFactory.setAssetBasePath("gfx/");
-        mBubbleTextureRegion = BitmapTextureAtlasTextureRegionFactory.createFromAsset(texture,
-                this, "bubble.png", 0, 0);
-        mHeroTextureRegion = BitmapTextureAtlasTextureRegionFactory.createTiledFromAsset(
-                textureHero, this, "cat.png", 0, 0, 8, 4);
+        TextureRegion mBubbleTextureRegion = BitmapTextureAtlasTextureRegionFactory
+                .createFromAsset(texture, this, "bubble.png", 0, 0);
 
         setItemBgTextureRegion(mBubbleTextureRegion);
-        mEngine.getTextureManager().loadTextures(texture, textureHero);
+        mEngine.getTextureManager().loadTextures(texture);
         loadMenuTextures();
     }
 
@@ -93,8 +78,7 @@ public class BaGameActivity extends MenuGameActivity {
         scene.setOnSceneTouchListener(new InternalOnSceneTouchListener());
         scene.registerUpdateHandler(new InternalSceneUpdateHandler());
         createMenuScene(mCamera);
-        mLevelLoader = new TMXLoader(this, mEngine.getTextureManager(),
-                TextureOptions.BILINEAR_PREMULTIPLYALPHA, null);
+        mLevelLoader = new BaLoader(this, scene, mEngine.getTextureManager());
         return scene;
     }
 
@@ -105,82 +89,8 @@ public class BaGameActivity extends MenuGameActivity {
 
     @Override
     public void loadLevel(int levelId) {
-        final Scene scene = mEngine.getScene();
-        scene.reset();
-        scene.detachChildren();
-        TMXTiledMap tiledMap;
-        try {
-            tiledMap = mLevelLoader.loadFromAsset(this, "level/" + (levelId % 2 + 1) + ".tmx");
-            ArrayList<TMXObjectGroup> groups = tiledMap.getTMXObjectGroups();
-            TMXObjectGroup group = groups.get(0); // we have only single group
-            for (TMXObject object : group.getTMXObjects()) {
-                final TMXProperties<TMXObjectProperty> props = object.getTMXObjectProperties();
-                IEntity c = createEntity(tiledMap, object, props);
-                scene.attachChild(c);
-            }
-        } catch (final TMXLoadException e) {
-            // do nothing
-        }
-        correctHeroPosition();
-    }
-
-    private void correctHeroPosition() {
-        IShape shape = findCollisionObject(mHero);
-        if (shape != null) {
-            // has collision
-            float x = mHero.getX();
-            float y = shape.getY() - mHero.getHeightScaled();
-            mHero.setPosition(x, y);
-        } else {
-            // no collisions
-            mHero.getPhysicsHandler().setVelocity(0, 100);
-            mHero.touch();
-        }
-    }
-
-    private IShape findCollisionObject(final IShape obj) {
-        IShape foundShape = null;
-        final Scene scene = mEngine.getScene();
-        int count = scene.getChildCount();
-        for (int i = 0; i < count; ++i) {
-            IShape shape = (IShape) scene.getChild(i);
-            if (shape != obj && obj.collidesWith(shape)) {
-                foundShape = shape;
-                break;
-            }
-        }
-        return foundShape;
-    }
-
-    private IEntity createEntity(final TMXTiledMap tiledMap, final TMXObject object,
-            final TMXProperties<TMXObjectProperty> props) {
-        final int gid = object.getGid();
-        float vx = 0f;
-        float vy = 0f;
-        for (final TMXObjectProperty p : props) {
-            if (p.getName().equals("vx")) {
-                vx = Float.parseFloat(p.getValue());
-            } else if (p.getName().equals("vy")) {
-                vy = Float.parseFloat(p.getValue());
-            }
-        }
-        IEntity e = null;
-        String type = object.getType();
-        if (type == null) {
-            e = new Sprite(object.getX(), object.getY(), tiledMap
-                    .getTextureRegionFromGlobalTileID(gid));
-        } else if (type.equals("circle")) {
-            e = new Circle(object.getX(), object.getY(), vx, vy, tiledMap
-                    .getTextureRegionFromGlobalTileID(gid));
-        } else if (type.equals("hero")) {
-            final Hero hero = new Hero(object.getX(), object.getY(), mHeroTextureRegion);
-            hero.setCurrentTileIndex(8);
-            hero.setScale(1.9f, 1.9f);
-            hero.setScaleCenter(0, 0);
-            mHero = hero;
-            e = hero;
-        }
-        return e;
+        mLevelLoader.loadLevel(this, levelId);
+        mHero = mLevelLoader.getHero();
     }
 
     private class InternalOnSceneTouchListener implements IOnSceneTouchListener {
