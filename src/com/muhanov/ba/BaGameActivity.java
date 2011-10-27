@@ -175,7 +175,7 @@ public class BaGameActivity extends MenuGameActivity {
             if (shape instanceof Circle) {
                 ch = new BaCollisionHandler(mCircleCb, shape, entities);
             } else if (shape instanceof Hero) {
-                ch = new BaCollisionHandler(mHeroCb, shape, entities);
+                ch = new BaCollisionHandler(mHeroCb, mHeroLackCb, shape, entities);
             } else {
                 ch = new BaCollisionHandler(mDummyCb, shape, entities);
             }
