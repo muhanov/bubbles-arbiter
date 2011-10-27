@@ -149,10 +149,10 @@ public class BaGameActivity extends MenuGameActivity {
 
         @Override
         public void onUpdate(float pSecondsElapsed) {
-            ProjectionsMap pm = new ProjectionsMap();
+            final ProjectionsMap pm = new ProjectionsMap();
             final Scene scene = mEngine.getScene();
 
-            ArrayList<IShape> p = buildProjectionsMap(scene, pm);
+            final ArrayList<IShape> p = buildProjectionsMap(scene, pm);
             final int size = p.size();
             for (int i = 0; i < size; ++i) {
                 IShape shape = p.get(i);

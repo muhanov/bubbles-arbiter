@@ -27,7 +27,6 @@ public class PhysicalAnimatedSprite extends AnimatedSprite implements ITouchEnti
         mPhysicsHandler = new PhysicsHandler(this);
         mPhysicsHandler.setEnabled(false);
         registerUpdateHandler(mPhysicsHandler);
-        
     }
     
     public PhysicsHandler getPhysicsHandler() {
@@ -36,6 +35,10 @@ public class PhysicalAnimatedSprite extends AnimatedSprite implements ITouchEnti
 
     public void setEnabled(boolean isEnabled) {
         mPhysicsHandler.setEnabled(isEnabled);
+    }
+    
+    public boolean isEnabled() {
+        return mPhysicsHandler.isEnabled();
     }
     
     @Override
