@@ -19,13 +19,32 @@ public class Hero extends PhysicalAnimatedSprite {
     }
 
     @Override
-    public boolean collidesWith(IShape pOtherShape) {
-        boolean collide = false;
-        if (pOtherShape instanceof Circle) {
-            
-        } else {
-            collide = super.collidesWith(pOtherShape);
+    public boolean collidesWith(IShape other) {
+        boolean res = false;
+        if (this == other) {
+            return res;
         }
-        return collide;
+        if (other instanceof Circle) {
+            final Circle circle = (Circle) other;
+            float closestX = clamp(circle.getX(), getX(), getX() + getWidthScaled());
+            float closestY = clamp(circle.getY(), getY(), getY() + getHeightScaled());
+
+            // Calculate the distance between the circle's center and this
+            // closest point
+            float distanceX = circle.getX() - closestX;
+            float distanceY = circle.getY() - closestY;
+
+            // If the distance is less than the circle's radius, an intersection
+            // occurs
+            float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+            res = distanceSquared < (circle.getRadius() * circle.getRadius());
+        } else {
+            res = super.collidesWith(other);
+        }
+        return res;
+    }
+
+    private float clamp(float input, float min, float max) {
+        return (input < min) ? min : (input > max) ? max : input;
     }
 }

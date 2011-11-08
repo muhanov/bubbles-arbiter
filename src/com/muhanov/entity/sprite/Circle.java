@@ -30,6 +30,9 @@ public class Circle extends PhysicalSprite {
     @Override
     public boolean collidesWith(IShape other) {
         boolean res = false;
+        if (this == other) {
+            return res;
+        }
         if (other instanceof Circle) {
             final Circle c = (Circle) other;
             float r = getRadius() + c.getRadius();
