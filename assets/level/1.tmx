@@ -13,6 +13,7 @@
   <image source="../gfx/stones.png" width="210" height="140"/>
  </tileset>
  <objectgroup name="Object Layer 1" width="10" height="10">
+<!--
   <object type="circle" gid="1" x="560" y="210">
    <properties>
     <property name="vx" value="100"/>
@@ -21,14 +22,15 @@
   </object>
   <object type="circle" gid="1" x="630" y="140"/>
   <object type="circle" gid="1" x="490" y="280"/>
+-->
   <object type="circle" gid="1" x="420" y="350">
    <properties>
     <property name="vx" value="100"/>
     <property name="vy" value="0"/>
    </properties>
   </object>
-  <object type="circle" gid="1" x="560" y="350"/>
-  <object type="hero" gid="11" x="70" y="210"/>
+<!--  <object type="circle" gid="1" x="560" y="350"/>-->
+  <object type="hero" gid="11" x="70" y="280"/>
   <object gid="35" x="0" y="350"/>
   <object gid="36" x="70" y="350"/>
   <object gid="36" x="140" y="350"/>

@@ -12,6 +12,6 @@ public class HeroLackCollisionCallback implements ILackCollisionCallback {
     public void onLackCollision(IShape checkShape) {
         final Hero hero = (Hero)checkShape;
         final PhysicsHandler ph = hero.getPhysicsHandler();
-        ph.setVelocity(10, 300);
+        ph.setVelocity(10, 1000);
     }
 }

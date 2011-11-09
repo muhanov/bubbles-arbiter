@@ -96,7 +96,7 @@ public class BaCollisionHandler implements IUpdateHandler {
 
     @Override
     public void reset() {
-
+        // do nothing
     }
 
     // ===========================================================
